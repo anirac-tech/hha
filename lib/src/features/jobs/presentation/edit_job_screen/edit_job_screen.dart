@@ -44,13 +44,12 @@ class _EditJobPageState extends ConsumerState<EditJobScreen> {
 
   Future<void> _submit() async {
     if (_validateAndSaveForm()) {
-      final success =
-          await ref.read(editJobScreenControllerProvider.notifier).submit(
-                jobId: widget.jobId,
-                oldJob: widget.job,
-                name: _name ?? '',
-                ratePerHour: _ratePerHour ?? 0,
-              );
+      final success = await ref.read(editJobScreenControllerProvider.notifier).submit(
+            jobId: widget.jobId,
+            oldJob: widget.job,
+            name: _name ?? '',
+            ratePerHour: _ratePerHour ?? 0,
+          );
       if (success && mounted) {
         context.pop();
       }
@@ -112,19 +111,8 @@ class _EditJobPageState extends ConsumerState<EditJobScreen> {
         decoration: const InputDecoration(labelText: 'Job name'),
         keyboardAppearance: Brightness.light,
         initialValue: _name,
-        validator: (value) =>
-            (value ?? '').isNotEmpty ? null : 'Name can\'t be empty',
+        validator: (value) => (value ?? '').isNotEmpty ? null : 'Name can\'t be empty',
         onSaved: (value) => _name = value,
-      ),
-      TextFormField(
-        decoration: const InputDecoration(labelText: 'Rate per hour'),
-        keyboardAppearance: Brightness.light,
-        initialValue: _ratePerHour != null ? '$_ratePerHour' : null,
-        keyboardType: const TextInputType.numberWithOptions(
-          signed: false,
-          decimal: false,
-        ),
-        onSaved: (value) => _ratePerHour = int.tryParse(value ?? '') ?? 0,
       ),
     ];
   }

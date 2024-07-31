@@ -14,20 +14,28 @@ class JobsRepository {
   const JobsRepository(this._firestore);
   final FirebaseFirestore _firestore;
 
+  // TODO: Carefully rename job to prompt
+  static String jobPath(String uid, String jobId) => 'users/$uid/prompts/$jobId';
+  static String jobsPath(String uid) => 'users/$uid/prompts';
+
+  // TODO: caseNotes path for caseNotes
+  /*
   static String jobPath(String uid, String jobId) => 'users/$uid/jobs/$jobId';
   static String jobsPath(String uid) => 'users/$uid/jobs';
+
+
+   */
+
   static String entriesPath(String uid) => EntriesRepository.entriesPath(uid);
 
   // create
   Future<void> addJob(
-          {required UserID uid,
-          required String name,
-          required int ratePerHour}) =>
+          {required UserID uid, required String textContent, required int ratePerHour}) =>
       _firestore.collection(jobsPath(uid)).add({
-        'name': name,
-        'ratePerHour': ratePerHour,
+        'textContent': textContent,
       });
 
+  // TODO: Delete update and deleteJob
   // update
   Future<void> updateJob({required UserID uid, required Job job}) =>
       _firestore.doc(jobPath(uid, job.id)).update(job.toMap());
@@ -49,27 +57,23 @@ class JobsRepository {
   }
 
   // read
-  Stream<Job> watchJob({required UserID uid, required JobID jobId}) =>
-      _firestore
-          .doc(jobPath(uid, jobId))
-          .withConverter<Job>(
-            fromFirestore: (snapshot, _) =>
-                Job.fromMap(snapshot.data()!, snapshot.id),
-            toFirestore: (job, _) => job.toMap(),
-          )
-          .snapshots()
-          .map((snapshot) => snapshot.data()!);
+  Stream<Job> watchJob({required UserID uid, required JobID jobId}) => _firestore
+      .doc(jobPath(uid, jobId))
+      .withConverter<Job>(
+        fromFirestore: (snapshot, _) => Job.fromMap(snapshot.data()!, snapshot.id),
+        toFirestore: (job, _) => job.toMap(),
+      )
+      .snapshots()
+      .map((snapshot) => snapshot.data()!);
 
   Stream<List<Job>> watchJobs({required UserID uid}) => queryJobs(uid: uid)
       .snapshots()
       .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList());
 
-  Query<Job> queryJobs({required UserID uid}) =>
-      _firestore.collection(jobsPath(uid)).withConverter(
-            fromFirestore: (snapshot, _) =>
-                Job.fromMap(snapshot.data()!, snapshot.id),
-            toFirestore: (job, _) => job.toMap(),
-          );
+  Query<Job> queryJobs({required UserID uid}) => _firestore.collection(jobsPath(uid)).withConverter(
+        fromFirestore: (snapshot, _) => Job.fromMap(snapshot.data()!, snapshot.id),
+        toFirestore: (job, _) => job.toMap(),
+      );
 
   Future<List<Job>> fetchJobs({required UserID uid}) async {
     final jobs = await queryJobs(uid: uid).get();
@@ -81,6 +85,9 @@ class JobsRepository {
 JobsRepository jobsRepository(JobsRepositoryRef ref) {
   return JobsRepository(FirebaseFirestore.instance);
 }
+
+// JOB=Ai PROMPT.
+// TODO: renaming, carefully or with ai
 
 @riverpod
 Query<Job> jobsQuery(JobsQueryRef ref) {

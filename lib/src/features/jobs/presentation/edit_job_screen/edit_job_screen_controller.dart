@@ -16,10 +16,7 @@ class EditJobScreenController extends _$EditJobScreenController {
   }
 
   Future<bool> submit(
-      {JobID? jobId,
-      Job? oldJob,
-      required String name,
-      required int ratePerHour}) async {
+      {JobID? jobId, Job? oldJob, required String name, required int ratePerHour}) async {
     final currentUser = ref.read(authRepositoryProvider).currentUser;
     if (currentUser == null) {
       throw AssertionError('User can\'t be null');
@@ -29,8 +26,7 @@ class EditJobScreenController extends _$EditJobScreenController {
     // check if name is already in use
     final repository = ref.read(jobsRepositoryProvider);
     final jobs = await repository.fetchJobs(uid: currentUser.uid);
-    final allLowerCaseNames =
-        jobs.map((job) => job.name.toLowerCase()).toList();
+    final allLowerCaseNames = jobs.map((job) => job.name.toLowerCase()).toList();
     // it's ok to use the same name as the old job
     if (oldJob != null) {
       allLowerCaseNames.remove(oldJob.name.toLowerCase());
@@ -48,8 +44,8 @@ class EditJobScreenController extends _$EditJobScreenController {
         );
       } else {
         state = await AsyncValue.guard(
-          () => repository.addJob(
-              uid: currentUser.uid, name: name, ratePerHour: ratePerHour),
+          () =>
+              repository.addJob(uid: currentUser.uid, textContent: name, ratePerHour: ratePerHour),
         );
       }
       return state.hasError == false;
