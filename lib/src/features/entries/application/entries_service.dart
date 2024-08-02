@@ -18,7 +18,7 @@ class EntriesService {
   /// combine List<Job>, List<Entry> into List<EntryJob>
   Stream<List<EntryJob>> _allEntriesStream(UserID uid) => CombineLatestStream.combine2(
         entriesRepository.watchEntries(uid: uid),
-        jobsRepository.watchJobs(uid: uid),
+        jobsRepository.watchPrompts(uid: uid),
         _entriesJobsCombiner,
       );
 

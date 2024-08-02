@@ -15,8 +15,8 @@ class JobsRepository {
   final FirebaseFirestore _firestore;
 
   // TODO: Carefully rename job to prompt
-  static String jobPath(String uid, String jobId) => 'users/$uid/prompts/$jobId';
-  static String jobsPath(String uid) => 'users/$uid/prompts';
+  static String promptPath(String uid, String jobId) => 'users/$uid/prompts/$jobId';
+  static String promptsPath(String uid) => 'users/$uid/prompts';
 
   // TODO: caseNotes path for caseNotes
   /*
@@ -29,15 +29,15 @@ class JobsRepository {
   static String entriesPath(String uid) => EntriesRepository.entriesPath(uid);
 
   // create
-  Future<void> addJob({required UserID uid, required String textContent}) =>
-      _firestore.collection(jobsPath(uid)).add({
+  Future<void> addPrompt({required UserID uid, required String textContent}) =>
+      _firestore.collection(promptsPath(uid)).add({
         'text': textContent,
       });
 
   // TODO: Delete update and deleteJob
   // update
-  Future<void> updateJob({required UserID uid, required Prompt job}) =>
-      _firestore.doc(jobPath(uid, job.id)).update(job.toMap());
+  Future<void> updatePrompt({required UserID uid, required Prompt job}) =>
+      _firestore.doc(promptPath(uid, job.id)).update(job.toMap());
 
   // delete
   Future<void> deleteJob({required UserID uid, required PromptID promptId}) async {
@@ -51,13 +51,13 @@ class JobsRepository {
       }
     }
     // delete job
-    final jobRef = _firestore.doc(jobPath(uid, promptId));
+    final jobRef = _firestore.doc(promptPath(uid, promptId));
     await jobRef.delete();
   }
 
   // read
-  Stream<Prompt> watchJob({required UserID uid, required PromptID jobId}) => _firestore
-      .doc(jobPath(uid, jobId))
+  Stream<Prompt> watchPrompt({required UserID uid, required PromptID jobId}) => _firestore
+      .doc(promptPath(uid, jobId))
       .withConverter<Prompt>(
         fromFirestore: (snapshot, _) => Prompt.fromMap(snapshot.data()!, snapshot.id),
         toFirestore: (job, _) => job.toMap(),
@@ -65,18 +65,18 @@ class JobsRepository {
       .snapshots()
       .map((snapshot) => snapshot.data()!);
 
-  Stream<List<Prompt>> watchJobs({required UserID uid}) => queryJobs(uid: uid)
+  Stream<List<Prompt>> watchPrompts({required UserID uid}) => queryPrompts(uid: uid)
       .snapshots()
       .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList());
 
-  Query<Prompt> queryJobs({required UserID uid}) =>
-      _firestore.collection(jobsPath(uid)).withConverter(
+  Query<Prompt> queryPrompts({required UserID uid}) =>
+      _firestore.collection(promptsPath(uid)).withConverter(
             fromFirestore: (snapshot, _) => Prompt.fromMap(snapshot.data()!, snapshot.id),
             toFirestore: (job, _) => job.toMap(),
           );
 
-  Future<List<Prompt>> fetchJobs({required UserID uid}) async {
-    final jobs = await queryJobs(uid: uid).get();
+  Future<List<Prompt>> fetchPrompts({required UserID uid}) async {
+    final jobs = await queryPrompts(uid: uid).get();
     return jobs.docs.map((doc) => doc.data()).toList();
   }
 }
@@ -96,7 +96,7 @@ Query<Prompt> jobsQuery(JobsQueryRef ref) {
     throw AssertionError('User can\'t be null');
   }
   final repository = ref.watch(jobsRepositoryProvider);
-  return repository.queryJobs(uid: user.uid);
+  return repository.queryPrompts(uid: user.uid);
 }
 
 @riverpod
@@ -106,5 +106,5 @@ Stream<Prompt> jobStream(JobStreamRef ref, PromptID jobId) {
     throw AssertionError('User can\'t be null');
   }
   final repository = ref.watch(jobsRepositoryProvider);
-  return repository.watchJob(uid: user.uid, jobId: jobId);
+  return repository.watchPrompt(uid: user.uid, jobId: jobId);
 }

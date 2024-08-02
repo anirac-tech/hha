@@ -24,7 +24,7 @@ class EditJobScreenController extends _$EditJobScreenController {
     state = const AsyncLoading().copyWithPrevious(state);
     // check if name is already in use
     final repository = ref.read(jobsRepositoryProvider);
-    final jobs = await repository.fetchJobs(uid: currentUser.uid);
+    final jobs = await repository.fetchPrompts(uid: currentUser.uid);
     final allLowerCaseNames = jobs.map((job) => job.text.toLowerCase()).toList();
     // it's ok to use the same name as the old job
     if (oldJob != null) {
@@ -39,11 +39,11 @@ class EditJobScreenController extends _$EditJobScreenController {
       if (jobId != null) {
         final job = Prompt(id: jobId, text: text);
         state = await AsyncValue.guard(
-          () => repository.updateJob(uid: currentUser.uid, job: job),
+          () => repository.updatePrompt(uid: currentUser.uid, job: job),
         );
       } else {
         state = await AsyncValue.guard(
-          () => repository.addJob(uid: currentUser.uid, textContent: text),
+          () => repository.addPrompt(uid: currentUser.uid, textContent: text),
         );
       }
       return state.hasError == false;
