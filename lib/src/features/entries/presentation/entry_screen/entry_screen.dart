@@ -24,12 +24,12 @@ class EntryScreen extends ConsumerStatefulWidget {
 
 class _EntryPageState extends ConsumerState<EntryScreen> {
   late DateTime _date;
-  late TimeOfDay _timeOfDay;
+
+  TimeOfDay _timeOfDay = const TimeOfDay(hour: 11, minute: 22);
 
   late String _response;
 
-  DateTime get dateTime =>
-      DateTime(_date.year, _date.month, _date.day, _timeOfDay.hour, _timeOfDay.minute);
+  DateTime get dateTime => DateTime(_date.year, _date.month, _date.day, 6, 22);
 
   @override
   void initState() {
