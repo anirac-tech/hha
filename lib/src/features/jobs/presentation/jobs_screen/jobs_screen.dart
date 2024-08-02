@@ -31,23 +31,21 @@ class JobsScreen extends StatelessWidget {
             (_, state) => state.showAlertDialogOnError(context),
           );
           final jobsQuery = ref.watch(jobsQueryProvider);
-          return FirestoreListView<Job>(
+          return FirestoreListView<Prompt>(
             query: jobsQuery,
             emptyBuilder: (context) => const Center(child: Text('No data')),
             errorBuilder: (context, error, stackTrace) => Center(
               child: Text(error.toString()),
             ),
-            loadingBuilder: (context) =>
-                const Center(child: CircularProgressIndicator()),
+            loadingBuilder: (context) => const Center(child: CircularProgressIndicator()),
             itemBuilder: (context, doc) {
               final job = doc.data();
               return Dismissible(
                 key: Key('job-${job.id}'),
                 background: Container(color: Colors.red),
                 direction: DismissDirection.endToStart,
-                onDismissed: (direction) => ref
-                    .read(jobsScreenControllerProvider.notifier)
-                    .deleteJob(job),
+                onDismissed: (direction) =>
+                    ref.read(jobsScreenControllerProvider.notifier).deleteJob(job),
                 child: JobListTile(
                   job: job,
                   onTap: () => context.goNamed(
@@ -66,13 +64,13 @@ class JobsScreen extends StatelessWidget {
 
 class JobListTile extends StatelessWidget {
   const JobListTile({super.key, required this.job, this.onTap});
-  final Job job;
+  final Prompt job;
   final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(job.name),
+      title: Text(job.text),
       trailing: const Icon(Icons.chevron_right),
       onTap: onTap,
     );

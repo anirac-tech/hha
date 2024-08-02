@@ -11,8 +11,8 @@ import 'package:starter_architecture_flutter_firebase/src/utils/async_value_ui.d
 
 class EditJobScreen extends ConsumerStatefulWidget {
   const EditJobScreen({super.key, this.jobId, this.job});
-  final JobID? jobId;
-  final Job? job;
+  final PromptID? jobId;
+  final Prompt? job;
 
   @override
   ConsumerState<EditJobScreen> createState() => _EditJobPageState();
@@ -21,15 +21,13 @@ class EditJobScreen extends ConsumerStatefulWidget {
 class _EditJobPageState extends ConsumerState<EditJobScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  String? _name;
-  int? _ratePerHour;
+  String? _text;
 
   @override
   void initState() {
     super.initState();
     if (widget.job != null) {
-      _name = widget.job?.name;
-      _ratePerHour = widget.job?.ratePerHour;
+      _text = widget.job?.text;
     }
   }
 
@@ -47,8 +45,7 @@ class _EditJobPageState extends ConsumerState<EditJobScreen> {
       final success = await ref.read(editJobScreenControllerProvider.notifier).submit(
             jobId: widget.jobId,
             oldJob: widget.job,
-            name: _name ?? '',
-            ratePerHour: _ratePerHour ?? 0,
+            text: _text ?? '',
           );
       if (success && mounted) {
         context.pop();
@@ -110,9 +107,9 @@ class _EditJobPageState extends ConsumerState<EditJobScreen> {
       TextFormField(
         decoration: const InputDecoration(labelText: 'Job name'),
         keyboardAppearance: Brightness.light,
-        initialValue: _name,
+        initialValue: _text,
         validator: (value) => (value ?? '').isNotEmpty ? null : 'Name can\'t be empty',
-        onSaved: (value) => _name = value,
+        onSaved: (value) => _text = value,
       ),
     ];
   }

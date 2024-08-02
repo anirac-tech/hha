@@ -8,56 +8,45 @@ import 'package:starter_architecture_flutter_firebase/src/common_widgets/respons
 import 'package:starter_architecture_flutter_firebase/src/constants/app_sizes.dart';
 import 'package:starter_architecture_flutter_firebase/src/constants/breakpoints.dart';
 import 'package:starter_architecture_flutter_firebase/src/features/entries/domain/entry.dart';
-import 'package:starter_architecture_flutter_firebase/src/features/jobs/domain/job.dart';
 import 'package:starter_architecture_flutter_firebase/src/features/entries/presentation/entry_screen/entry_screen_controller.dart';
+import 'package:starter_architecture_flutter_firebase/src/features/jobs/domain/job.dart';
 import 'package:starter_architecture_flutter_firebase/src/utils/async_value_ui.dart';
-import 'package:starter_architecture_flutter_firebase/src/utils/format.dart';
 
 class EntryScreen extends ConsumerStatefulWidget {
-  const EntryScreen({super.key, required this.jobId, this.entryId, this.entry});
-  final JobID jobId;
-  final EntryID? entryId;
-  final Entry? entry;
+  const EntryScreen({super.key, required this.promptID, this.responseID, this.response});
+  final PromptID promptID;
+  final ResponseID? responseID;
+  final Response? response;
 
   @override
   ConsumerState<EntryScreen> createState() => _EntryPageState();
 }
 
 class _EntryPageState extends ConsumerState<EntryScreen> {
-  late DateTime _startDate;
-  late TimeOfDay _startTime;
-  late DateTime _endDate;
-  late TimeOfDay _endTime;
-  late String _comment;
+  late DateTime _date;
+  late TimeOfDay _timeOfDay;
 
-  DateTime get start => DateTime(_startDate.year, _startDate.month,
-      _startDate.day, _startTime.hour, _startTime.minute);
-  DateTime get end => DateTime(_endDate.year, _endDate.month, _endDate.day,
-      _endTime.hour, _endTime.minute);
+  late String _response;
+
+  DateTime get dateTime =>
+      DateTime(_date.year, _date.month, _date.day, _timeOfDay.hour, _timeOfDay.minute);
 
   @override
   void initState() {
     super.initState();
-    final start = widget.entry?.start ?? DateTime.now();
-    _startDate = DateTime(start.year, start.month, start.day);
-    _startTime = TimeOfDay.fromDateTime(start);
+    final start = widget.response?.dateTime ?? DateTime.now();
+    _date = DateTime(start.year, start.month, start.day);
 
-    final end = widget.entry?.end ?? DateTime.now();
-    _endDate = DateTime(end.year, end.month, end.day);
-    _endTime = TimeOfDay.fromDateTime(end);
-
-    _comment = widget.entry?.comment ?? '';
+    _response = widget.response?.response ?? '';
   }
 
   Future<void> _setEntryAndDismiss() async {
-    final success =
-        await ref.read(entryScreenControllerProvider.notifier).submit(
-              entryId: widget.entryId,
-              jobId: widget.jobId,
-              start: start,
-              end: end,
-              comment: _comment,
-            );
+    final success = await ref.read(entryScreenControllerProvider.notifier).submit(
+          entryId: widget.responseID,
+          jobId: widget.promptID,
+          dateTime: dateTime,
+          response: _response,
+        );
     if (success && mounted) {
       context.pop();
     }
@@ -71,11 +60,11 @@ class _EntryPageState extends ConsumerState<EntryScreen> {
     );
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.entry != null ? 'Edit Entry' : 'New Entry'),
+        title: Text(widget.response != null ? 'Edit Pretend Response' : 'New Pretend Response'),
         actions: <Widget>[
           TextButton(
             child: Text(
-              widget.entry != null ? 'Update' : 'Create',
+              widget.response != null ? 'Update' : 'Create',
               style: const TextStyle(fontSize: 18.0, color: Colors.white),
             ),
             onPressed: () => _setEntryAndDismiss(),
@@ -91,9 +80,6 @@ class _EntryPageState extends ConsumerState<EntryScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               _buildStartDate(),
-              _buildEndDate(),
-              gapH8,
-              _buildDuration(),
               gapH8,
               _buildComment(),
             ],
@@ -106,36 +92,10 @@ class _EntryPageState extends ConsumerState<EntryScreen> {
   Widget _buildStartDate() {
     return DateTimePicker(
       labelText: 'Start',
-      selectedDate: _startDate,
-      selectedTime: _startTime,
-      onSelectedDate: (date) => setState(() => _startDate = date),
-      onSelectedTime: (time) => setState(() => _startTime = time),
-    );
-  }
-
-  Widget _buildEndDate() {
-    return DateTimePicker(
-      labelText: 'End',
-      selectedDate: _endDate,
-      selectedTime: _endTime,
-      onSelectedDate: (date) => setState(() => _endDate = date),
-      onSelectedTime: (time) => setState(() => _endTime = time),
-    );
-  }
-
-  Widget _buildDuration() {
-    final durationInHours = end.difference(start).inMinutes.toDouble() / 60.0;
-    final durationFormatted = Format.hours(durationInHours);
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: <Widget>[
-        Text(
-          'Duration: $durationFormatted',
-          style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.w500),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-      ],
+      selectedDate: _date,
+      selectedTime: _timeOfDay,
+      onSelectedDate: (date) => setState(() => _date = date),
+      onSelectedTime: (time) => setState(() => _timeOfDay = time),
     );
   }
 
@@ -143,15 +103,15 @@ class _EntryPageState extends ConsumerState<EntryScreen> {
     return TextField(
       keyboardType: TextInputType.text,
       maxLength: 50,
-      controller: TextEditingController(text: _comment),
+      controller: TextEditingController(text: _response),
       decoration: const InputDecoration(
-        labelText: 'Comment',
+        labelText: 'PretendAnswer',
         labelStyle: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w500),
       ),
       keyboardAppearance: Brightness.light,
       style: const TextStyle(fontSize: 20.0, color: Colors.black),
       maxLines: null,
-      onChanged: (comment) => _comment = comment,
+      onChanged: (pretendAnswer) => _response = pretendAnswer,
     );
   }
 }

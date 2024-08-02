@@ -153,11 +153,11 @@ GoRouter goRouter(GoRouterRef ref) {
                         name: AppRoute.addEntry.name,
                         parentNavigatorKey: _rootNavigatorKey,
                         pageBuilder: (context, state) {
-                          final jobId = state.pathParameters['id']!;
+                          final promptID = state.pathParameters['id']!;
                           return MaterialPage(
                             fullscreenDialog: true,
                             child: EntryScreen(
-                              jobId: jobId,
+                              promptID: promptID,
                             ),
                           );
                         },
@@ -166,14 +166,14 @@ GoRouter goRouter(GoRouterRef ref) {
                         path: 'entries/:eid',
                         name: AppRoute.entry.name,
                         pageBuilder: (context, state) {
-                          final jobId = state.pathParameters['id']!;
+                          final promptID = state.pathParameters['id']!;
                           final entryId = state.pathParameters['eid']!;
-                          final entry = state.extra as Entry?;
+                          final entry = state.extra as Response?;
                           return MaterialPage(
                             child: EntryScreen(
-                              jobId: jobId,
-                              entryId: entryId,
-                              entry: entry,
+                              promptID: promptID,
+                              responseID: entryId,
+                              response: entry,
                             ),
                           );
                         },
@@ -183,7 +183,7 @@ GoRouter goRouter(GoRouterRef ref) {
                         name: AppRoute.editJob.name,
                         pageBuilder: (context, state) {
                           final jobId = state.pathParameters['id'];
-                          final job = state.extra as Job?;
+                          final job = state.extra as Prompt?;
                           return MaterialPage(
                             fullscreenDialog: true,
                             child: EditJobScreen(jobId: jobId, job: job),

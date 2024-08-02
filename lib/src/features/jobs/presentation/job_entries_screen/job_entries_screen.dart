@@ -9,12 +9,12 @@ import 'package:starter_architecture_flutter_firebase/src/routing/app_router.dar
 
 class JobEntriesScreen extends ConsumerWidget {
   const JobEntriesScreen({super.key, required this.jobId});
-  final JobID jobId;
+  final PromptID jobId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final jobAsync = ref.watch(jobStreamProvider(jobId));
-    return ScaffoldAsyncValueWidget<Job>(
+    return ScaffoldAsyncValueWidget<Prompt>(
       value: jobAsync,
       data: (job) => JobEntriesPageContents(job: job),
     );
@@ -23,13 +23,13 @@ class JobEntriesScreen extends ConsumerWidget {
 
 class JobEntriesPageContents extends StatelessWidget {
   const JobEntriesPageContents({super.key, required this.job});
-  final Job job;
+  final Prompt job;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(job.name),
+        title: Text(job.text),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.edit, color: Colors.white),

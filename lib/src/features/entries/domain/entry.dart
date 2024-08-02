@@ -1,49 +1,40 @@
 import 'package:equatable/equatable.dart';
 import 'package:starter_architecture_flutter_firebase/src/features/jobs/domain/job.dart';
 
-typedef EntryID = String;
+typedef ResponseID = String;
 
-class Entry extends Equatable {
-  const Entry({
+// ie AIResponse
+class Response extends Equatable {
+  const Response({
     required this.id,
-    required this.jobId,
-    required this.start,
-    required this.end,
-    required this.comment,
+    required this.promptId,
+    required this.dateTime,
+    required this.response,
   });
-  final EntryID id;
-  final JobID jobId;
-  final DateTime start;
-  final DateTime end;
-  final String comment;
+  final ResponseID id;
+  final PromptID promptId;
+  final DateTime dateTime;
+  final String response;
 
   @override
-  List<Object> get props => [id, jobId, start, end, comment];
+  List<Object> get props => [id, promptId, dateTime, response];
 
   @override
   bool get stringify => true;
 
-  double get durationInHours =>
-      end.difference(start).inMinutes.toDouble() / 60.0;
-
-  factory Entry.fromMap(Map<dynamic, dynamic> value, EntryID id) {
-    final startMilliseconds = value['start'] as int;
-    final endMilliseconds = value['end'] as int;
-    return Entry(
+  factory Response.fromMap(Map<dynamic, dynamic> value, ResponseID id) {
+    final dateTimeMilliseconds = value['dateTime'] as int;
+    return Response(
       id: id,
-      jobId: value['jobId'] as String,
-      start: DateTime.fromMillisecondsSinceEpoch(startMilliseconds),
-      end: DateTime.fromMillisecondsSinceEpoch(endMilliseconds),
-      comment: value['comment'] as String? ?? '',
+      promptId: value['promptId'] as String,
+      dateTime: DateTime.fromMillisecondsSinceEpoch(dateTimeMilliseconds),
+      response: value['response'] as String? ?? '',
     );
   }
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'jobId': jobId,
-      'start': start.millisecondsSinceEpoch,
-      'end': end.millisecondsSinceEpoch,
-      'comment': comment,
-    };
-  }
+  Map<String, dynamic> toMap() => <String, dynamic>{
+        'promptId': promptId,
+        'dateTime': dateTime.millisecondsSinceEpoch,
+        'response': response,
+      };
 }
