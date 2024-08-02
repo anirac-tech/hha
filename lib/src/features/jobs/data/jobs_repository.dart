@@ -31,7 +31,7 @@ class JobsRepository {
   // create
   Future<void> addJob({required UserID uid, required String textContent}) =>
       _firestore.collection(jobsPath(uid)).add({
-        'textContent': textContent,
+        'text': textContent,
       });
 
   // TODO: Delete update and deleteJob
