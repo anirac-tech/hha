@@ -5,8 +5,7 @@ class Strings {
 
   // Logout
   static const String logout = 'Logout';
-  static const String logoutAreYouSure =
-      'Are you sure that you want to logout?';
+  static const String logoutAreYouSure = 'Are you sure that you want to logout?';
   static const String logoutFailed = 'Logout failed';
 
   // Sign In Page
@@ -19,8 +18,8 @@ class Strings {
   // Home page
   static const String homePage = 'Home Page';
 
-  // Jobs page
-  static const String jobs = 'Jobs';
+  // Prompts page
+  static const String prompts = 'Prompts';
 
   // Entries page
   static const String entries = 'Entries';

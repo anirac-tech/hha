@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:starter_architecture_flutter_firebase/src/routing/app_startup.dart';
 import 'package:starter_architecture_flutter_firebase/src/features/authentication/data/firebase_auth_repository.dart';
 import 'package:starter_architecture_flutter_firebase/src/features/authentication/presentation/custom_profile_screen.dart';
 import 'package:starter_architecture_flutter_firebase/src/features/authentication/presentation/custom_sign_in_screen.dart';
-import 'package:starter_architecture_flutter_firebase/src/features/entries/presentation/entries_screen.dart';
 import 'package:starter_architecture_flutter_firebase/src/features/entries/domain/entry.dart';
-import 'package:starter_architecture_flutter_firebase/src/features/jobs/domain/job.dart';
+import 'package:starter_architecture_flutter_firebase/src/features/entries/presentation/entries_screen.dart';
 import 'package:starter_architecture_flutter_firebase/src/features/entries/presentation/entry_screen/entry_screen.dart';
-import 'package:starter_architecture_flutter_firebase/src/features/jobs/presentation/job_entries_screen/job_entries_screen.dart';
-import 'package:go_router/go_router.dart';
+import 'package:starter_architecture_flutter_firebase/src/features/jobs/domain/job.dart';
 import 'package:starter_architecture_flutter_firebase/src/features/jobs/presentation/edit_job_screen/edit_job_screen.dart';
+import 'package:starter_architecture_flutter_firebase/src/features/jobs/presentation/job_entries_screen/job_entries_screen.dart';
 import 'package:starter_architecture_flutter_firebase/src/features/jobs/presentation/jobs_screen/jobs_screen.dart';
 import 'package:starter_architecture_flutter_firebase/src/features/onboarding/data/onboarding_repository.dart';
 import 'package:starter_architecture_flutter_firebase/src/features/onboarding/presentation/onboarding_screen.dart';
+import 'package:starter_architecture_flutter_firebase/src/routing/app_startup.dart';
 import 'package:starter_architecture_flutter_firebase/src/routing/go_router_refresh_stream.dart';
 import 'package:starter_architecture_flutter_firebase/src/routing/not_found_screen.dart';
 import 'package:starter_architecture_flutter_firebase/src/routing/scaffold_with_nested_navigation.dart';
@@ -37,6 +37,7 @@ enum AppRoute {
   addEntry,
   editEntry,
   entries,
+  miscNotes,
   profile,
 }
 
@@ -54,8 +55,7 @@ GoRouter goRouter(GoRouterRef ref) {
       if (appStartupState.isLoading || appStartupState.hasError) {
         return '/startup';
       }
-      final onboardingRepository =
-          ref.read(onboardingRepositoryProvider).requireValue;
+      final onboardingRepository = ref.read(onboardingRepositoryProvider).requireValue;
       final didCompleteOnboarding = onboardingRepository.isOnboardingComplete();
       final path = state.uri.path;
       if (!didCompleteOnboarding) {
@@ -144,7 +144,7 @@ GoRouter goRouter(GoRouterRef ref) {
                     pageBuilder: (context, state) {
                       final id = state.pathParameters['id']!;
                       return MaterialPage(
-                        child: JobEntriesScreen(jobId: id),
+                        child: PromptResponsesScreen(promptId: id),
                       );
                     },
                     routes: [
@@ -153,11 +153,11 @@ GoRouter goRouter(GoRouterRef ref) {
                         name: AppRoute.addEntry.name,
                         parentNavigatorKey: _rootNavigatorKey,
                         pageBuilder: (context, state) {
-                          final jobId = state.pathParameters['id']!;
+                          final promptID = state.pathParameters['id']!;
                           return MaterialPage(
                             fullscreenDialog: true,
                             child: EntryScreen(
-                              jobId: jobId,
+                              promptID: promptID,
                             ),
                           );
                         },
@@ -166,14 +166,14 @@ GoRouter goRouter(GoRouterRef ref) {
                         path: 'entries/:eid',
                         name: AppRoute.entry.name,
                         pageBuilder: (context, state) {
-                          final jobId = state.pathParameters['id']!;
+                          final promptID = state.pathParameters['id']!;
                           final entryId = state.pathParameters['eid']!;
-                          final entry = state.extra as Entry?;
+                          final entry = state.extra as Response?;
                           return MaterialPage(
                             child: EntryScreen(
-                              jobId: jobId,
-                              entryId: entryId,
-                              entry: entry,
+                              promptID: promptID,
+                              responseID: entryId,
+                              response: entry,
                             ),
                           );
                         },
@@ -183,10 +183,10 @@ GoRouter goRouter(GoRouterRef ref) {
                         name: AppRoute.editJob.name,
                         pageBuilder: (context, state) {
                           final jobId = state.pathParameters['id'];
-                          final job = state.extra as Job?;
+                          final job = state.extra as Prompt?;
                           return MaterialPage(
                             fullscreenDialog: true,
-                            child: EditJobScreen(jobId: jobId, job: job),
+                            child: EditJobScreen(promptId: jobId, prompt: job),
                           );
                         },
                       ),

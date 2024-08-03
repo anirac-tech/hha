@@ -16,11 +16,10 @@ class EntryScreenController extends _$EntryScreenController {
   }
 
   Future<bool> submit({
-    EntryID? entryId,
-    required JobID jobId,
-    required DateTime start,
-    required DateTime end,
-    required String comment,
+    ResponseID? entryId,
+    required PromptID jobId,
+    required DateTime dateTime,
+    required String response,
   }) async {
     final currentUser = ref.read(authRepositoryProvider).currentUser;
     if (currentUser == null) {
@@ -31,21 +30,19 @@ class EntryScreenController extends _$EntryScreenController {
     if (entryId == null) {
       state = await AsyncValue.guard(() => repository.addEntry(
             uid: currentUser.uid,
-            jobId: jobId,
-            start: start,
-            end: end,
-            comment: comment,
+            promptId: jobId,
+            dateTime: dateTime,
+            response: response,
           ));
     } else {
-      final entry = Entry(
+      final entry = Response(
         id: entryId,
-        jobId: jobId,
-        start: start,
-        end: end,
-        comment: comment,
+        promptId: jobId,
+        dateTime: dateTime,
+        response: '',
       );
-      state = await AsyncValue.guard(
-          () => repository.updateEntry(uid: currentUser.uid, entry: entry));
+      state =
+          await AsyncValue.guard(() => repository.updateEntry(uid: currentUser.uid, entry: entry));
     }
     return state.hasError == false;
   }

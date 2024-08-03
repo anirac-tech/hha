@@ -24,7 +24,7 @@ class OnboardingScreen extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'Track your time.\nBecause time counts.',
+              'Do we need an onboarding screen\n If we did, we would probably want an image with it',
               style: Theme.of(context).textTheme.headlineSmall,
               textAlign: TextAlign.center,
             ),
@@ -42,9 +42,7 @@ class OnboardingScreen extends ConsumerWidget {
               onPressed: state.isLoading
                   ? null
                   : () async {
-                      await ref
-                          .read(onboardingControllerProvider.notifier)
-                          .completeOnboarding();
+                      await ref.read(onboardingControllerProvider.notifier).completeOnboarding();
                       if (context.mounted) {
                         // go to sign in page after completing onboarding
                         context.goNamed(AppRoute.signIn.name);

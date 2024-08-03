@@ -12,7 +12,7 @@ import 'package:starter_architecture_flutter_firebase/src/utils/async_value_ui.d
 
 class JobEntriesList extends ConsumerWidget {
   const JobEntriesList({super.key, required this.job});
-  final Job job;
+  final Prompt job;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -21,7 +21,7 @@ class JobEntriesList extends ConsumerWidget {
       (_, state) => state.showAlertDialogOnError(context),
     );
     final jobEntriesQuery = ref.watch(jobEntriesQueryProvider(job.id));
-    return FirestoreListView<Entry>(
+    return FirestoreListView<Response>(
       query: jobEntriesQuery,
       itemBuilder: (context, doc) {
         final entry = doc.data();
@@ -29,9 +29,8 @@ class JobEntriesList extends ConsumerWidget {
           dismissibleKey: Key('entry-${entry.id}'),
           entry: entry,
           job: job,
-          onDismissed: () => ref
-              .read(jobsEntriesListControllerProvider.notifier)
-              .deleteEntry(entry.id),
+          onDismissed: () =>
+              ref.read(jobsEntriesListControllerProvider.notifier).deleteEntry(entry.id),
           onTap: () => context.goNamed(
             AppRoute.entry.name,
             pathParameters: {'id': job.id, 'eid': entry.id},

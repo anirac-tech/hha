@@ -14,7 +14,7 @@ class JobsEntriesListController extends _$JobsEntriesListController {
     // ok to leave this empty if the return type is FutureOr<void>
   }
 
-  Future<void> deleteEntry(EntryID entryId) async {
+  Future<void> deleteEntry(ResponseID entryId) async {
     final currentUser = ref.read(authRepositoryProvider).currentUser;
     if (currentUser == null) {
       throw AssertionError('User can\'t be null');

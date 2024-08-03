@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:starter_architecture_flutter_firebase/src/constants/app_sizes.dart';
-import 'package:starter_architecture_flutter_firebase/src/utils/format.dart';
 import 'package:starter_architecture_flutter_firebase/src/features/entries/domain/entry.dart';
 import 'package:starter_architecture_flutter_firebase/src/features/jobs/domain/job.dart';
+import 'package:starter_architecture_flutter_firebase/src/utils/format.dart';
 
 class EntryListItem extends StatelessWidget {
   const EntryListItem({
@@ -12,8 +12,8 @@ class EntryListItem extends StatelessWidget {
     this.onTap,
   });
 
-  final Entry entry;
-  final Job job;
+  final Response entry;
+  final Prompt job;
   final VoidCallback? onTap;
 
   @override
@@ -38,39 +38,23 @@ class EntryListItem extends StatelessWidget {
   }
 
   Widget _buildContents(BuildContext context) {
-    final dayOfWeek = Format.dayOfWeek(entry.start);
-    final startDate = Format.date(entry.start);
-    final startTime = TimeOfDay.fromDateTime(entry.start).format(context);
-    final endTime = TimeOfDay.fromDateTime(entry.end).format(context);
-    final durationFormatted = Format.hours(entry.durationInHours);
-
-    final pay = job.ratePerHour * entry.durationInHours;
-    final payFormatted = Format.currency(pay);
+    final dayOfWeek = Format.dayOfWeek(entry.dateTime);
+    final startDate = Format.date(entry.dateTime);
+    final startTime = TimeOfDay.fromDateTime(entry.dateTime).format(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Row(children: <Widget>[
-          Text(dayOfWeek,
-              style: const TextStyle(fontSize: 18.0, color: Colors.grey)),
+          Text(dayOfWeek, style: const TextStyle(fontSize: 18.0, color: Colors.grey)),
           gapW16,
           Text(startDate, style: const TextStyle(fontSize: 18.0)),
-          if (job.ratePerHour > 0.0) ...<Widget>[
-            Expanded(child: Container()),
-            Text(
-              payFormatted,
-              style: TextStyle(fontSize: 16.0, color: Colors.green[700]),
-            ),
-          ],
+          gapW16,
+          Text(startTime, style: const TextStyle(fontSize: 18.0)),
         ]),
-        Row(children: <Widget>[
-          Text('$startTime - $endTime', style: const TextStyle(fontSize: 16.0)),
-          Expanded(child: Container()),
-          Text(durationFormatted, style: const TextStyle(fontSize: 16.0)),
-        ]),
-        if (entry.comment.isNotEmpty)
+        if (entry.response.isNotEmpty)
           Text(
-            entry.comment,
+            entry.response,
             style: const TextStyle(fontSize: 12.0),
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
@@ -91,8 +75,8 @@ class DismissibleEntryListItem extends StatelessWidget {
   });
 
   final Key dismissibleKey;
-  final Entry entry;
-  final Job job;
+  final Response entry;
+  final Prompt job;
   final VoidCallback? onDismissed;
   final VoidCallback? onTap;
 

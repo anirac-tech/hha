@@ -14,14 +14,14 @@ class JobsScreenController extends _$JobsScreenController {
     // ok to leave this empty if the return type is FutureOr<void>
   }
 
-  Future<void> deleteJob(Job job) async {
+  Future<void> deleteJob(Prompt job) async {
     final currentUser = ref.read(authRepositoryProvider).currentUser;
     if (currentUser == null) {
       throw AssertionError('User can\'t be null');
     }
     final repository = ref.read(jobsRepositoryProvider);
     state = const AsyncLoading();
-    state = await AsyncValue.guard(
-        () => repository.deleteJob(uid: currentUser.uid, jobId: job.id));
+    state =
+        await AsyncValue.guard(() => repository.deleteJob(uid: currentUser.uid, promptId: job.id));
   }
 }
