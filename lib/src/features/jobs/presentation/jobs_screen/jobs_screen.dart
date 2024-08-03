@@ -16,7 +16,7 @@ class JobsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(Strings.jobs),
+        title: const Text(Strings.prompts),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.add, color: Colors.white),
