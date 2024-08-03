@@ -92,40 +92,42 @@ class ScaffoldWithNavigationRail extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int> onDestinationSelected;
 
+  // TODO: consider when past POC if this should use an array of tabas so not duplicated icons
+  // and names
+  // it's confusing and inefficient ot update these twice
+  // but they don't ger updated that often
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Row(
-        children: [
-          NavigationRail(
-            selectedIndex: currentIndex,
-            onDestinationSelected: onDestinationSelected,
-            labelType: NavigationRailLabelType.all,
-            destinations: <NavigationRailDestination>[
-              NavigationRailDestination(
-                icon: const Icon(Icons.work_outline),
-                selectedIcon: const Icon(Icons.work),
-                label: Text('Jobs'.hardcoded),
-              ),
-              NavigationRailDestination(
-                icon: const Icon(Icons.view_headline_outlined),
-                selectedIcon: const Icon(Icons.view_headline),
-                label: Text('Entries'.hardcoded),
-              ),
-              NavigationRailDestination(
-                icon: const Icon(Icons.person_outline),
-                selectedIcon: const Icon(Icons.person),
-                label: Text('Account'.hardcoded),
-              ),
-            ],
-          ),
-          const VerticalDivider(thickness: 1, width: 1),
-          // This is the main content.
-          Expanded(
-            child: body,
-          ),
-        ],
-      ),
-    );
-  }
+  Widget build(BuildContext context) => Scaffold(
+        body: Row(
+          children: [
+            NavigationRail(
+              selectedIndex: currentIndex,
+              onDestinationSelected: onDestinationSelected,
+              labelType: NavigationRailLabelType.all,
+              destinations: <NavigationRailDestination>[
+                NavigationRailDestination(
+                  icon: const Icon(Icons.question_answer),
+                  selectedIcon: const Icon(Icons.question_answer),
+                  label: Text('Prompts'.hardcoded),
+                ),
+                NavigationRailDestination(
+                  icon: const Icon(Icons.view_headline_outlined),
+                  selectedIcon: const Icon(Icons.view_headline),
+                  label: Text('Entries'.hardcoded),
+                ),
+                NavigationRailDestination(
+                  icon: const Icon(Icons.person_outline),
+                  selectedIcon: const Icon(Icons.person),
+                  label: Text('Account'.hardcoded),
+                ),
+              ],
+            ),
+            const VerticalDivider(thickness: 1, width: 1),
+            // This is the main content.
+            Expanded(
+              child: body,
+            ),
+          ],
+        ),
+      );
 }
