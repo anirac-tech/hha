@@ -1,7 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
 import 'package:starter_architecture_flutter_firebase/src/localization/string_hardcoded.dart';
 
 // Stateful navigation based on:
@@ -55,33 +54,31 @@ class ScaffoldWithNavigationBar extends StatelessWidget {
   final ValueChanged<int> onDestinationSelected;
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: body,
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: currentIndex,
-        destinations: [
-          // products
-          NavigationDestination(
-            icon: const Icon(Icons.work_outline),
-            selectedIcon: const Icon(Icons.work),
-            label: 'Jobs'.hardcoded,
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.view_headline_outlined),
-            selectedIcon: const Icon(Icons.view_headline),
-            label: 'Entries'.hardcoded,
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.person_outline),
-            selectedIcon: const Icon(Icons.person),
-            label: 'Account'.hardcoded,
-          ),
-        ],
-        onDestinationSelected: onDestinationSelected,
-      ),
-    );
-  }
+  Widget build(BuildContext context) => Scaffold(
+        body: body,
+        bottomNavigationBar: NavigationBar(
+          selectedIndex: currentIndex,
+          destinations: [
+            // TOOO: map
+            NavigationDestination(
+              icon: const Icon(Icons.question_answer_outlined),
+              selectedIcon: const Icon(Icons.question_answer),
+              label: 'Prompts'.hardcoded,
+            ),
+            NavigationDestination(
+              icon: const Icon(Icons.view_headline_outlined),
+              selectedIcon: const Icon(Icons.view_headline),
+              label: 'Case Notes'.hardcoded,
+            ),
+            NavigationDestination(
+              icon: const Icon(Icons.person_outline),
+              selectedIcon: const Icon(Icons.person),
+              label: 'Account'.hardcoded,
+            ),
+          ],
+          onDestinationSelected: onDestinationSelected,
+        ),
+      );
 }
 
 class ScaffoldWithNavigationRail extends StatelessWidget {

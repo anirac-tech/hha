@@ -144,7 +144,7 @@ GoRouter goRouter(GoRouterRef ref) {
                     pageBuilder: (context, state) {
                       final id = state.pathParameters['id']!;
                       return MaterialPage(
-                        child: JobEntriesScreen(jobId: id),
+                        child: PromptResponsesScreen(promptId: id),
                       );
                     },
                     routes: [
@@ -186,7 +186,7 @@ GoRouter goRouter(GoRouterRef ref) {
                           final job = state.extra as Prompt?;
                           return MaterialPage(
                             fullscreenDialog: true,
-                            child: EditJobScreen(jobId: jobId, job: job),
+                            child: EditJobScreen(promptId: jobId, prompt: job),
                           );
                         },
                       ),

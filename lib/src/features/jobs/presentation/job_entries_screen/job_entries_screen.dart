@@ -7,18 +7,15 @@ import 'package:starter_architecture_flutter_firebase/src/features/jobs/domain/j
 import 'package:starter_architecture_flutter_firebase/src/features/jobs/presentation/job_entries_screen/job_entries_list.dart';
 import 'package:starter_architecture_flutter_firebase/src/routing/app_router.dart';
 
-class JobEntriesScreen extends ConsumerWidget {
-  const JobEntriesScreen({super.key, required this.jobId});
-  final PromptID jobId;
+class PromptResponsesScreen extends ConsumerWidget {
+  const PromptResponsesScreen({super.key, required this.promptId});
+  final PromptID promptId;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final jobAsync = ref.watch(jobStreamProvider(jobId));
-    return ScaffoldAsyncValueWidget<Prompt>(
-      value: jobAsync,
-      data: (job) => JobEntriesPageContents(job: job),
-    );
-  }
+  Widget build(BuildContext context, WidgetRef ref) => ScaffoldAsyncValueWidget<Prompt>(
+        value: ref.watch(jobStreamProvider(promptId)),
+        data: (job) => JobEntriesPageContents(job: job),
+      );
 }
 
 class JobEntriesPageContents extends StatelessWidget {
@@ -26,30 +23,28 @@ class JobEntriesPageContents extends StatelessWidget {
   final Prompt job;
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(job.text),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.edit, color: Colors.white),
-            onPressed: () => context.goNamed(
-              AppRoute.editJob.name,
-              pathParameters: {'id': job.id},
-              extra: job,
+  Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(
+          title: Text(job.text),
+          actions: <Widget>[
+            IconButton(
+              icon: const Icon(Icons.edit, color: Colors.white),
+              onPressed: () => context.goNamed(
+                AppRoute.editJob.name,
+                pathParameters: {'id': job.id},
+                extra: job,
+              ),
             ),
-          ),
-        ],
-      ),
-      body: JobEntriesList(job: job),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add, color: Colors.white),
-        onPressed: () => context.goNamed(
-          AppRoute.addEntry.name,
-          pathParameters: {'id': job.id},
-          extra: job,
+          ],
         ),
-      ),
-    );
-  }
+        body: JobEntriesList(job: job),
+        floatingActionButton: FloatingActionButton(
+          child: const Icon(Icons.add, color: Colors.white),
+          onPressed: () => context.goNamed(
+            AppRoute.addEntry.name,
+            pathParameters: {'id': job.id},
+            extra: job,
+          ),
+        ),
+      );
 }

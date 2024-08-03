@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:starter_architecture_flutter_firebase/src/common_widgets/date_time_picker.dart';
@@ -12,6 +13,7 @@ import 'package:starter_architecture_flutter_firebase/src/features/entries/prese
 import 'package:starter_architecture_flutter_firebase/src/features/jobs/domain/job.dart';
 import 'package:starter_architecture_flutter_firebase/src/utils/async_value_ui.dart';
 
+// Important note: this entire "responses" page is for demo/testing
 class EntryScreen extends ConsumerStatefulWidget {
   const EntryScreen({super.key, required this.promptID, this.responseID, this.response});
   final PromptID promptID;
@@ -81,7 +83,7 @@ class _EntryPageState extends ConsumerState<EntryScreen> {
             children: <Widget>[
               _buildStartDate(),
               gapH8,
-              _buildComment(),
+              _buildTemporaryAnswer(),
             ],
           ),
         ),
@@ -89,29 +91,31 @@ class _EntryPageState extends ConsumerState<EntryScreen> {
     );
   }
 
-  Widget _buildStartDate() {
-    return DateTimePicker(
-      labelText: 'Start',
-      selectedDate: _date,
-      selectedTime: _timeOfDay,
-      onSelectedDate: (date) => setState(() => _date = date),
-      onSelectedTime: (time) => setState(() => _timeOfDay = time),
-    );
-  }
+  Widget _buildStartDate() => DateTimePicker(
+        labelText: 'Time',
+        selectedDate: _date,
+        selectedTime: _timeOfDay,
+        onSelectedDate: (date) => setState(() => _date = date),
+        onSelectedTime: (time) => setState(() => _timeOfDay = time),
+      );
 
-  Widget _buildComment() {
-    return TextField(
-      keyboardType: TextInputType.text,
-      maxLength: 50,
-      controller: TextEditingController(text: _response),
-      decoration: const InputDecoration(
-        labelText: 'PretendAnswer',
-        labelStyle: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w500),
-      ),
-      keyboardAppearance: Brightness.light,
-      style: const TextStyle(fontSize: 20.0, color: Colors.black),
-      maxLines: null,
-      onChanged: (pretendAnswer) => _response = pretendAnswer,
-    );
-  }
+  Widget _buildTemporaryAnswer() => Expanded(
+        child: TextField(
+          keyboardType: TextInputType.multiline,
+          maxLengthEnforcement: MaxLengthEnforcement.none,
+          controller: TextEditingController(text: _response),
+          decoration: const InputDecoration(
+            labelText:
+                'Please copy/paste/export answer from gemini.google.com\n possibly as plain text or html eetc',
+            labelStyle: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w500),
+          ),
+          keyboardAppearance: Brightness.light,
+          style: const TextStyle(fontSize: 20.0, color: Colors.black),
+          // https://g.co/gemini/share/4305521712af
+          // re: full width considerations with keyboard etc
+          // expanded+null didn't "jus twork" but this is a temporary screen
+          maxLines: 24,
+          onChanged: (pretendAnswer) => _response = pretendAnswer,
+        ),
+      );
 }

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:starter_architecture_flutter_firebase/src/common_widgets/responsive_center.dart';
@@ -10,9 +11,9 @@ import 'package:starter_architecture_flutter_firebase/src/features/jobs/presenta
 import 'package:starter_architecture_flutter_firebase/src/utils/async_value_ui.dart';
 
 class EditJobScreen extends ConsumerStatefulWidget {
-  const EditJobScreen({super.key, this.jobId, this.job});
-  final PromptID? jobId;
-  final Prompt? job;
+  const EditJobScreen({super.key, this.promptId, this.prompt});
+  final PromptID? promptId;
+  final Prompt? prompt;
 
   @override
   ConsumerState<EditJobScreen> createState() => _EditJobPageState();
@@ -26,8 +27,8 @@ class _EditJobPageState extends ConsumerState<EditJobScreen> {
   @override
   void initState() {
     super.initState();
-    if (widget.job != null) {
-      _text = widget.job?.text;
+    if (widget.prompt != null) {
+      _text = widget.prompt?.text;
     }
   }
 
@@ -43,8 +44,8 @@ class _EditJobPageState extends ConsumerState<EditJobScreen> {
   Future<void> _submit() async {
     if (_validateAndSaveForm()) {
       final success = await ref.read(editJobScreenControllerProvider.notifier).submit(
-            jobId: widget.jobId,
-            oldJob: widget.job,
+            jobId: widget.promptId,
+            oldJob: widget.prompt,
             text: _text ?? '',
           );
       if (success && mounted) {
@@ -62,7 +63,7 @@ class _EditJobPageState extends ConsumerState<EditJobScreen> {
     final state = ref.watch(editJobScreenControllerProvider);
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.job == null ? 'New Job' : 'Edit Job'),
+        title: Text(widget.prompt == null ? 'New Prompt' : 'Edit Job (should we remove this?)'),
         actions: <Widget>[
           TextButton(
             onPressed: state.isLoading ? null : _submit,
@@ -77,40 +78,36 @@ class _EditJobPageState extends ConsumerState<EditJobScreen> {
     );
   }
 
-  Widget _buildContents() {
-    return SingleChildScrollView(
-      child: ResponsiveCenter(
-        maxContentWidth: Breakpoint.tablet,
-        padding: const EdgeInsets.all(16.0),
-        child: Card(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: _buildForm(),
+  Widget _buildContents() => SingleChildScrollView(
+        child: ResponsiveCenter(
+          maxContentWidth: Breakpoint.tablet,
+          padding: const EdgeInsets.all(16.0),
+          child: Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: _buildForm(),
+            ),
           ),
         ),
-      ),
-    );
-  }
+      );
 
-  Widget _buildForm() {
-    return Form(
-      key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: _buildFormChildren(),
-      ),
-    );
-  }
+  Widget _buildForm() => Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: _buildFormChildren(),
+        ),
+      );
 
-  List<Widget> _buildFormChildren() {
-    return [
-      TextFormField(
-        decoration: const InputDecoration(labelText: 'Job name'),
-        keyboardAppearance: Brightness.light,
-        initialValue: _text,
-        validator: (value) => (value ?? '').isNotEmpty ? null : 'Name can\'t be empty',
-        onSaved: (value) => _text = value,
-      ),
-    ];
-  }
+  List<Widget> _buildFormChildren() => [
+        TextFormField(
+          decoration: const InputDecoration(labelText: 'Prompt'),
+          keyboardAppearance: Brightness.light,
+          maxLines: 7,
+          maxLengthEnforcement: MaxLengthEnforcement.none,
+          initialValue: _text,
+          validator: (value) => (value ?? '').isNotEmpty ? null : 'Prompt can\'t be empty',
+          onSaved: (value) => _text = value,
+        ),
+      ];
 }
