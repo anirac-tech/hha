@@ -83,7 +83,8 @@ GoRouter goRouter(GoRouterRef ref) {
         final locationsRepository = ref.watch(locationsRepositoryProvider);
         // TODO: Implement real location from GPS in LocationService
         // TODO: https://anirac-tech.atlassian.net/browse/HHA-19
-
+        // Note; we might not want to await this sicne no spinner
+        // esp when using GPS
         Location pretendLocation = Location(
             userId: uid,
             latLng: getRandomCarrolltonLatLng(),
@@ -254,11 +255,16 @@ GoRouter goRouter(GoRouterRef ref) {
 }
 
 String getRandomCarrolltonLatLng() {
-  String sevenCarrolltonLatLngs = '''
-  32.9654,-96.8921 32.9802,-96.8785 32.9713,-96.8957 32.9789,-96.8812 32.9687,-96.8743 32.9735,-96.8900 32.9761,-96.8849
-  ''';
   final random = Random();
   final randomNumber = random.nextInt(7); // between 0 and 6
-  List<String> listLatLngs = sevenCarrolltonLatLngs.split(' ');
+  List<String> listLatLngs = [
+    '32.9654,-96.8921',
+    '32.9802,-96.8785',
+    '32.9713,-96.8957',
+    '32.9789,-96.8812',
+    '32.9687,-96.8743',
+    '32.9735,-96.8900',
+    '32.9761,-96.8849'
+  ];
   return listLatLngs[randomNumber];
 }
