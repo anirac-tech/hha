@@ -68,10 +68,13 @@ GoRouter goRouter(GoRouterRef ref) {
       }
       final isLoggedIn = authRepository.currentUser != null;
       if (isLoggedIn) {
+        String name = authRepository.currentUser?.displayName ?? 'Unknown name';
+
         if (path.startsWith('/startup') ||
             path.startsWith('/onboarding') ||
             path.startsWith('/signIn')) {
           return '/jobs';
+          // TODO: Modify to "home" route or similar
         }
       } else {
         if (path.startsWith('/startup') ||
