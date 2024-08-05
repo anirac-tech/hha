@@ -2,12 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:starter_architecture_flutter_firebase/src/common_widgets/date_time_picker.dart';
-import 'package:starter_architecture_flutter_firebase/src/common_widgets/responsive_center.dart';
 import 'package:starter_architecture_flutter_firebase/src/constants/app_sizes.dart';
-import 'package:starter_architecture_flutter_firebase/src/constants/breakpoints.dart';
 import 'package:starter_architecture_flutter_firebase/src/features/entries/domain/entry.dart';
 import 'package:starter_architecture_flutter_firebase/src/features/entries/presentation/entry_screen/entry_screen_controller.dart';
 import 'package:starter_architecture_flutter_firebase/src/features/jobs/domain/job.dart';
@@ -66,26 +65,22 @@ class _EntryPageState extends ConsumerState<EntryScreen> {
         actions: <Widget>[
           TextButton(
             child: Text(
-              widget.response != null ? 'Update' : 'Create',
+              widget.response != null ? 'View' : 'Create',
               style: const TextStyle(fontSize: 18.0, color: Colors.white),
             ),
             onPressed: () => _setEntryAndDismiss(),
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: ResponsiveCenter(
-          maxContentWidth: Breakpoint.tablet,
-          padding: const EdgeInsets.all(Sizes.p16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              _buildStartDate(),
-              gapH8,
-              _buildTemporaryAnswer(),
-            ],
-          ),
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            _buildStartDate(),
+            gapH8,
+            widget.response != null ? _buildHtmlView() : _buildTemporaryAnswer(),
+          ],
         ),
       ),
     );
@@ -98,6 +93,8 @@ class _EntryPageState extends ConsumerState<EntryScreen> {
         onSelectedDate: (date) => setState(() => _date = date),
         onSelectedTime: (time) => setState(() => _timeOfDay = time),
       );
+
+  Widget _buildHtmlView() => Html(data: _response);
 
   Widget _buildTemporaryAnswer() => Expanded(
         child: TextField(

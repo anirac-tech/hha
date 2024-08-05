@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "191090790967",
+    "project_id": "ministry-demos",
+    "storage_bucket": "ministry-demos.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:191090790967:android:a8c1541842d793e10d25b2",
+        "android_client_info": {
+          "package_name": "com.example.starter_architecture_flutter_firebase"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "191090790967-t14v63a878f27ophjd41qrk0fv2mf1j1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBNWd2ssRMH5buHNiyoygfj2-nMFGzozyY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "191090790967-t14v63a878f27ophjd41qrk0fv2mf1j1.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "191090790967-1dgrtaipgeckre9gj6o6497mb48smepi.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.fortyDaysKitPoc"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
