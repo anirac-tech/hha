@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -11,12 +13,15 @@ import 'package:starter_architecture_flutter_firebase/src/features/jobs/domain/j
 import 'package:starter_architecture_flutter_firebase/src/features/jobs/presentation/edit_job_screen/edit_job_screen.dart';
 import 'package:starter_architecture_flutter_firebase/src/features/jobs/presentation/job_entries_screen/job_entries_screen.dart';
 import 'package:starter_architecture_flutter_firebase/src/features/jobs/presentation/jobs_screen/jobs_screen.dart';
+import 'package:starter_architecture_flutter_firebase/src/features/location/data/location_repository.dart';
 import 'package:starter_architecture_flutter_firebase/src/features/onboarding/data/onboarding_repository.dart';
 import 'package:starter_architecture_flutter_firebase/src/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:starter_architecture_flutter_firebase/src/routing/app_startup.dart';
 import 'package:starter_architecture_flutter_firebase/src/routing/go_router_refresh_stream.dart';
 import 'package:starter_architecture_flutter_firebase/src/routing/not_found_screen.dart';
 import 'package:starter_architecture_flutter_firebase/src/routing/scaffold_with_nested_navigation.dart';
+
+import '../features/location/domain/location.dart';
 
 part 'app_router.g.dart';
 
@@ -50,12 +55,13 @@ GoRouter goRouter(GoRouterRef ref) {
     initialLocation: '/signIn',
     navigatorKey: _rootNavigatorKey,
     debugLogDiagnostics: true,
-    redirect: (context, state) {
+    redirect: (context, state) async {
       // If the app is still initializing, show the /startup route
       if (appStartupState.isLoading || appStartupState.hasError) {
         return '/startup';
       }
       final onboardingRepository = ref.read(onboardingRepositoryProvider).requireValue;
+
       final didCompleteOnboarding = onboardingRepository.isOnboardingComplete();
       final path = state.uri.path;
       if (!didCompleteOnboarding) {
@@ -68,8 +74,23 @@ GoRouter goRouter(GoRouterRef ref) {
       }
       final isLoggedIn = authRepository.currentUser != null;
       if (isLoggedIn) {
-        String name = authRepository.currentUser?.displayName ?? 'Unknown name';
+        String name = authRepository.currentUser!.displayName ?? 'Unknown name';
+        // isLogged in branch means current user is not null
+        String uid = authRepository.currentUser!.uid;
 
+        // Consider lint warning below
+        // ignore: avoid_manual_providers_as_generated_provider_dependency
+        final locationsRepository = ref.watch(locationsRepositoryProvider);
+        // TODO: Implement real location from GPS in LocationService
+        // TODO: https://anirac-tech.atlassian.net/browse/HHA-19
+
+        Location pretendLocation = Location(
+            userId: uid,
+            latLng: getRandomCarrolltonLatLng(),
+            dateTime: DateTime.now(),
+            name: name,
+            source: 'AppOpenPretend');
+        await locationsRepository.insertOrUpdate(uid: uid, location: pretendLocation);
         if (path.startsWith('/startup') ||
             path.startsWith('/onboarding') ||
             path.startsWith('/signIn')) {
@@ -230,4 +251,14 @@ GoRouter goRouter(GoRouterRef ref) {
       child: NotFoundScreen(),
     ),
   );
+}
+
+String getRandomCarrolltonLatLng() {
+  String sevenCarrolltonLatLngs = '''
+  32.9654,-96.8921 32.9802,-96.8785 32.9713,-96.8957 32.9789,-96.8812 32.9687,-96.8743 32.9735,-96.8900 32.9761,-96.8849
+  ''';
+  final random = Random();
+  final randomNumber = random.nextInt(7); // between 0 and 6
+  List<String> listLatLngs = sevenCarrolltonLatLngs.split(' ');
+  return listLatLngs[randomNumber];
 }

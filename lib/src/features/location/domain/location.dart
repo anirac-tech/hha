@@ -4,7 +4,11 @@ import 'package:starter_architecture_flutter_firebase/src/features/authenticatio
 // TODO: Freezed not equatable
 class Location extends Equatable {
   const Location(
-      {required this.userId, required this.dateTime, required this.name, required this.source});
+      {required this.userId,
+      required this.latLng,
+      required this.dateTime,
+      required this.name,
+      required this.source});
 
   /*
   dateTime
@@ -29,12 +33,14 @@ userId
   // for now userid functions as locationid bc table is only storing latest location
   final UserID userId;
   final DateTime dateTime;
+
+  final String latLng;
   final String name;
 
   final String source;
 
   @override
-  List<Object> get props => [userId, name, dateTime, source];
+  List<Object> get props => [userId, dateTime, name, latLng, source];
 
   @override
   bool get stringify => true;
@@ -43,9 +49,10 @@ userId
     final dateTimeMilliseconds = value['dateTime'] as int;
     return Location(
       userId: value['userId'] as String,
-      name: value['promptId'] as String? ?? '',
       dateTime: DateTime.fromMillisecondsSinceEpoch(dateTimeMilliseconds),
-      source: value['response'] as String? ?? '',
+      name: value['name'] as String? ?? '',
+      latLng: value['latLng'] as String,
+      source: value['source'] as String? ?? '',
     );
   }
 
@@ -53,6 +60,7 @@ userId
         'userId': userId,
         'dateTime': dateTime.millisecondsSinceEpoch,
         'name': name,
+        'latLng': latLng,
         'source': source
       };
 }
