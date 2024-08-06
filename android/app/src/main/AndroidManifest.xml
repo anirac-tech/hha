@@ -3,6 +3,10 @@
         android:label="starter_architecture_flutter_firebase"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+
+        <!-- TODO: restrict and/or change before production release -->
+        <meta-data android:name="com.google.android.geo.API_KEY"
+                   android:value="inserthere"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"
