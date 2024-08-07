@@ -15,50 +15,61 @@ class JobsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(Strings.prompts),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.add, color: Colors.white),
-            onPressed: () => context.goNamed(AppRoute.addJob.name),
-          ),
-        ],
-      ),
-      body: Consumer(
-        builder: (context, ref, child) {
-          ref.listen<AsyncValue>(
-            jobsScreenControllerProvider,
-            (_, state) => state.showAlertDialogOnError(context),
-          );
-          final jobsQuery = ref.watch(jobsQueryProvider);
-          return FirestoreListView<Prompt>(
-            query: jobsQuery,
-            emptyBuilder: (context) => const Center(child: Text('No data')),
-            errorBuilder: (context, error, stackTrace) => Center(
-              child: Text(error.toString()),
+        appBar: AppBar(
+          title: const Text(Strings.prompts),
+          actions: <Widget>[
+            IconButton(
+              icon: const Icon(Icons.add, color: Colors.white),
+              onPressed: () => context.goNamed(AppRoute.addJob.name),
             ),
-            loadingBuilder: (context) => const Center(child: CircularProgressIndicator()),
-            itemBuilder: (context, doc) {
-              final job = doc.data();
-              return Dismissible(
-                key: Key('job-${job.id}'),
-                background: Container(color: Colors.red),
-                direction: DismissDirection.endToStart,
-                onDismissed: (direction) =>
-                    ref.read(jobsScreenControllerProvider.notifier).deleteJob(job),
-                child: JobListTile(
-                  job: job,
-                  onTap: () => context.goNamed(
-                    AppRoute.job.name,
-                    pathParameters: {'id': job.id},
+          ],
+        ),
+        body: Consumer(
+          builder: (context, ref, child) {
+            ref.listen<AsyncValue>(
+              jobsScreenControllerProvider,
+              (_, state) => state.showAlertDialogOnError(context),
+            );
+            final jobsQuery = ref.watch(jobsQueryProvider);
+            return FirestoreListView<Prompt>(
+              query: jobsQuery,
+              emptyBuilder: (context) => const Center(child: Text('No data')),
+              errorBuilder: (context, error, stackTrace) => Center(
+                child: Text(error.toString()),
+              ),
+              loadingBuilder: (context) => const Center(child: CircularProgressIndicator()),
+              itemBuilder: (context, doc) {
+                final job = doc.data();
+                return Dismissible(
+                  key: Key('job-${job.id}'),
+                  background: Container(color: Colors.red),
+                  direction: DismissDirection.endToStart,
+                  onDismissed: (direction) =>
+                      ref.read(jobsScreenControllerProvider.notifier).deleteJob(job),
+                  child: JobListTile(
+                    job: job,
+                    onTap: () => context.goNamed(
+                      AppRoute.job.name,
+                      pathParameters: {'id': job.id},
+                    ),
                   ),
-                ),
-              );
-            },
-          );
-        },
-      ),
-    );
+                );
+              },
+            );
+          },
+        ),
+        // TODO: help text from remote config
+        floatingActionButton: FloatingActionButton.extended(
+            icon: const Icon(Icons.help),
+            foregroundColor: Colors.white,
+            isExtended: true,
+            onPressed: () => onHelpPressed(),
+            label: SizedBox(
+                width: MediaQuery.of(context).size.width * 0.7, child: const Text('Help'))));
+  }
+
+  void onHelpPressed() {
+    debugPrint('hi');
   }
 }
 
