@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:starter_architecture_flutter_firebase/main.dart';
 import 'package:starter_architecture_flutter_firebase/src/constants/strings.dart';
 import 'package:starter_architecture_flutter_firebase/src/features/jobs/data/jobs_repository.dart';
 import 'package:starter_architecture_flutter_firebase/src/features/jobs/domain/job.dart';
@@ -66,17 +67,13 @@ class JobsScreen extends StatelessWidget {
             isExtended: true,
             onPressed: () async => await onHelpPressed(context),
             label: SizedBox(
-                width: MediaQuery.of(context).size.width * 0.7, child: const Text('Help'))));
+                width: MediaQuery.of(context).size.width * 0.7, child: Text(helpButtonText))));
   }
 
   Future<void> onHelpPressed(BuildContext context) async {
-    String htmlString = '''
-    <b>Bold works, lists work</b><ol><li>this one</li><li>this2</li><li>this3</li></ol>
-    <img height="200" width="200" alt="train" src="https://images.pexels.com/photos/27583783/pexels-photo-27583783/free-photo-of-a-classic-yellow-tram-in-lisbon.jpeg"/>
-    ''';
     Navigator.of(context).push(MaterialPageRoute<Null>(
         builder: (BuildContext context) {
-          return SimpleHtmlHelpDialog(htmlString: htmlString);
+          return SimpleHtmlHelpDialog(htmlString: helpScreenHtml);
         },
         fullscreenDialog: true));
   }

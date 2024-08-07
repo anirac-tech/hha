@@ -27,6 +27,8 @@ dependencies:
   riverpod_annotation: 2.3.5
   flutter_html: ^3.0.0-beta.2
   firebase_in_app_messaging: ^0.7.5+7
+  firebase_remote_config: ^4.4.7
+  firebase_analytics: ^10.10.7
 
 dev_dependencies:
   flutter_test:
