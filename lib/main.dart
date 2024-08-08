@@ -32,12 +32,14 @@ Future<void> main() async {
         '''
   });
   await remoteConfig.fetchAndActivate();
-  remoteConfig.onConfigUpdated.listen((event) async {
-    await remoteConfig.activate();
+  if (!kIsWeb) {
+    remoteConfig.onConfigUpdated.listen((event) async {
+      await remoteConfig.activate();
 
-    helpButtonText = remoteConfig.getString("help_button_text");
-    helpScreenHtml = remoteConfig.getString("help_screen_html");
-  });
+      helpButtonText = remoteConfig.getString("help_button_text");
+      helpScreenHtml = remoteConfig.getString("help_screen_html");
+    });
+  }
   helpButtonText = remoteConfig.getString("help_button_text");
   helpScreenHtml = remoteConfig.getString("help_screen_html");
   // TODO: Make the magic strings constants.
