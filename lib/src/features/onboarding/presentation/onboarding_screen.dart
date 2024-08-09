@@ -24,16 +24,16 @@ class OnboardingScreen extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'Do we need an onboarding screen\n If we did, we would probably want an image with it',
+              'Welcome to Journey Hub!',
               style: Theme.of(context).textTheme.headlineSmall,
               textAlign: TextAlign.center,
             ),
             gapH16,
             SvgPicture.asset(
-              'assets/time-tracking.svg',
+              'assets/journeyhub-notext-t.svg',
               width: 200,
               height: 200,
-              semanticsLabel: 'Time tracking logo',
+              semanticsLabel: 'JourneyHub logo',
             ),
             gapH16,
             PrimaryButton(
