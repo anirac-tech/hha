@@ -5,9 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:starter_architecture_flutter_firebase/main.dart';
 import 'package:starter_architecture_flutter_firebase/src/constants/strings.dart';
-import 'package:starter_architecture_flutter_firebase/src/features/jobs/data/jobs_repository.dart';
-import 'package:starter_architecture_flutter_firebase/src/features/jobs/domain/job.dart';
-import 'package:starter_architecture_flutter_firebase/src/features/jobs/presentation/jobs_screen/jobs_screen_controller.dart';
+import 'package:starter_architecture_flutter_firebase/src/features/chat/data/jobs_repository.dart';
+import 'package:starter_architecture_flutter_firebase/src/features/chat/domain/prompt.dart';
+import 'package:starter_architecture_flutter_firebase/src/features/chat/presentation/jobs_screen/jobs_screen_controller.dart';
 import 'package:starter_architecture_flutter_firebase/src/routing/app_router.dart';
 import 'package:starter_architecture_flutter_firebase/src/utils/async_value_ui.dart';
 
@@ -49,7 +49,7 @@ class JobsScreen extends StatelessWidget {
                   onDismissed: (direction) =>
                       ref.read(jobsScreenControllerProvider.notifier).deleteJob(job),
                   child: JobListTile(
-                    job: job,
+                    prompt: job,
                     onTap: () => context.goNamed(
                       AppRoute.job.name,
                       pathParameters: {'id': job.id},
@@ -92,14 +92,14 @@ class SimpleHtmlHelpDialog extends StatelessWidget {
 }
 
 class JobListTile extends StatelessWidget {
-  const JobListTile({super.key, required this.job, this.onTap});
-  final Prompt job;
+  const JobListTile({super.key, required this.prompt, this.onTap});
+  final Prompt prompt;
   final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(job.text),
+      title: Text(prompt.text),
       trailing: const Icon(Icons.chevron_right),
       onTap: onTap,
     );
