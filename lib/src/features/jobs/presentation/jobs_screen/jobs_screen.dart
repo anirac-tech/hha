@@ -3,13 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:starter_architecture_flutter_firebase/main.dart';
 import 'package:starter_architecture_flutter_firebase/src/constants/strings.dart';
 import 'package:starter_architecture_flutter_firebase/src/features/jobs/data/jobs_repository.dart';
 import 'package:starter_architecture_flutter_firebase/src/features/jobs/domain/job.dart';
 import 'package:starter_architecture_flutter_firebase/src/features/jobs/presentation/jobs_screen/jobs_screen_controller.dart';
 import 'package:starter_architecture_flutter_firebase/src/routing/app_router.dart';
 import 'package:starter_architecture_flutter_firebase/src/utils/async_value_ui.dart';
+
+String helpButtonText = 'Help';
+String helpButtonHtml = 'ksdfj';
 
 class JobsScreen extends StatelessWidget {
   const JobsScreen({super.key});
@@ -78,6 +80,8 @@ class JobsScreen extends StatelessWidget {
         fullscreenDialog: true));
   }
 }
+
+String helpScreenHtml = "fixme";
 
 class SimpleHtmlHelpDialog extends StatelessWidget {
   final String htmlString;
