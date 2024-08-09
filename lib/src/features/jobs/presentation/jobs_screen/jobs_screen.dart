@@ -1,7 +1,9 @@
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:starter_architecture_flutter_firebase/main.dart';
 import 'package:starter_architecture_flutter_firebase/src/constants/strings.dart';
 import 'package:starter_architecture_flutter_firebase/src/features/jobs/data/jobs_repository.dart';
 import 'package:starter_architecture_flutter_firebase/src/features/jobs/domain/job.dart';
@@ -15,51 +17,78 @@ class JobsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(Strings.prompts),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.add, color: Colors.white),
-            onPressed: () => context.goNamed(AppRoute.addJob.name),
-          ),
-        ],
-      ),
-      body: Consumer(
-        builder: (context, ref, child) {
-          ref.listen<AsyncValue>(
-            jobsScreenControllerProvider,
-            (_, state) => state.showAlertDialogOnError(context),
-          );
-          final jobsQuery = ref.watch(jobsQueryProvider);
-          return FirestoreListView<Prompt>(
-            query: jobsQuery,
-            emptyBuilder: (context) => const Center(child: Text('No data')),
-            errorBuilder: (context, error, stackTrace) => Center(
-              child: Text(error.toString()),
+        appBar: AppBar(
+          title: const Text(Strings.prompts),
+          actions: <Widget>[
+            IconButton(
+              icon: const Icon(Icons.add, color: Colors.white),
+              onPressed: () => context.goNamed(AppRoute.addJob.name),
             ),
-            loadingBuilder: (context) => const Center(child: CircularProgressIndicator()),
-            itemBuilder: (context, doc) {
-              final job = doc.data();
-              return Dismissible(
-                key: Key('job-${job.id}'),
-                background: Container(color: Colors.red),
-                direction: DismissDirection.endToStart,
-                onDismissed: (direction) =>
-                    ref.read(jobsScreenControllerProvider.notifier).deleteJob(job),
-                child: JobListTile(
-                  job: job,
-                  onTap: () => context.goNamed(
-                    AppRoute.job.name,
-                    pathParameters: {'id': job.id},
+          ],
+        ),
+        body: Consumer(
+          builder: (context, ref, child) {
+            ref.listen<AsyncValue>(
+              jobsScreenControllerProvider,
+              (_, state) => state.showAlertDialogOnError(context),
+            );
+            final jobsQuery = ref.watch(jobsQueryProvider);
+            return FirestoreListView<Prompt>(
+              query: jobsQuery,
+              emptyBuilder: (context) => const Center(child: Text('No data')),
+              errorBuilder: (context, error, stackTrace) => Center(
+                child: Text(error.toString()),
+              ),
+              loadingBuilder: (context) => const Center(child: CircularProgressIndicator()),
+              itemBuilder: (context, doc) {
+                final job = doc.data();
+                return Dismissible(
+                  key: Key('job-${job.id}'),
+                  background: Container(color: Colors.red),
+                  direction: DismissDirection.endToStart,
+                  onDismissed: (direction) =>
+                      ref.read(jobsScreenControllerProvider.notifier).deleteJob(job),
+                  child: JobListTile(
+                    job: job,
+                    onTap: () => context.goNamed(
+                      AppRoute.job.name,
+                      pathParameters: {'id': job.id},
+                    ),
                   ),
-                ),
-              );
-            },
-          );
-        },
-      ),
-    );
+                );
+              },
+            );
+          },
+        ),
+        // TODO: help text from remote config
+        floatingActionButton: FloatingActionButton.extended(
+            icon: const Icon(Icons.help),
+            foregroundColor: Colors.white,
+            isExtended: true,
+            onPressed: () async => await onHelpPressed(context),
+            label: SizedBox(
+                width: MediaQuery.of(context).size.width * 0.7, child: Text(helpButtonText))));
   }
+
+  Future<void> onHelpPressed(BuildContext context) async {
+    Navigator.of(context).push(MaterialPageRoute<Null>(
+        builder: (BuildContext context) {
+          return SimpleHtmlHelpDialog(htmlString: helpScreenHtml);
+        },
+        fullscreenDialog: true));
+  }
+}
+
+class SimpleHtmlHelpDialog extends StatelessWidget {
+  final String htmlString;
+
+  const SimpleHtmlHelpDialog({super.key, required this.htmlString});
+  @override
+  Widget build(BuildContext context) => Scaffold(
+      appBar: AppBar(
+        title: const Text('Help'),
+      ),
+      body: Html(data: htmlString));
 }
 
 class JobListTile extends StatelessWidget {

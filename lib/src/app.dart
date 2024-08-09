@@ -12,6 +12,7 @@ class MyApp extends ConsumerWidget {
     final goRouter = ref.watch(goRouterProvider);
     return MaterialApp.router(
       routerConfig: goRouter,
+      title: 'JourneyHub',
       theme: ThemeData(
         colorSchemeSeed: primaryColor,
         unselectedWidgetColor: Colors.grey,

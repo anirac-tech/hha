@@ -24,6 +24,9 @@ class Strings {
   // Entries page
   static const String entries = 'Entries';
 
+  // Cooling Centers page
+  static const String centers = 'Cooling Centers';
+
   // Account page
   static const String account = 'Account';
   static const String accountPage = 'Account Page';

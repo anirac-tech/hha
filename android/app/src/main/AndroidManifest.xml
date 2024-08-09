@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="starter_architecture_flutter_firebase"
+        android:label="JourneyHub"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
 
@@ -34,4 +34,10 @@
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="tel" />
+        </intent>
+    </queries>
 </manifest>
