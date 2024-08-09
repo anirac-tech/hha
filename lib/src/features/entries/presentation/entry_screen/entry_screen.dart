@@ -25,18 +25,18 @@ class EntryScreen extends ConsumerStatefulWidget {
 
 class _EntryPageState extends ConsumerState<EntryScreen> {
   late DateTime _date;
-
-  TimeOfDay _timeOfDay = const TimeOfDay(hour: 11, minute: 22);
-
+  late TimeOfDay _timeOfDay;
   late String _response;
 
-  DateTime get dateTime => DateTime(_date.year, _date.month, _date.day, 6, 22);
+  DateTime get dateTime =>
+      DateTime(_date.year, _date.month, _date.day, _timeOfDay.hour, _timeOfDay.minute);
 
   @override
   void initState() {
     super.initState();
     final start = widget.response?.dateTime ?? DateTime.now();
     _date = DateTime(start.year, start.month, start.day);
+    _timeOfDay = TimeOfDay(hour: start.hour, minute: start.minute);
 
     _response = widget.response?.response ?? '';
   }
@@ -65,7 +65,7 @@ class _EntryPageState extends ConsumerState<EntryScreen> {
         actions: <Widget>[
           TextButton(
             child: Text(
-              widget.response != null ? 'View' : 'Create',
+              widget.response != null ? 'Save' : 'Create',
               style: const TextStyle(fontSize: 18.0, color: Colors.white),
             ),
             onPressed: () => _setEntryAndDismiss(),
