@@ -63,12 +63,12 @@ class ScaffoldWithNavigationBar extends StatelessWidget {
             NavigationDestination(
               icon: const Icon(Icons.question_answer_outlined),
               selectedIcon: const Icon(Icons.question_answer),
-              label: 'Prompts'.hardcoded,
+              label: 'Chat'.hardcoded,
             ),
             NavigationDestination(
-              icon: const Icon(Icons.view_headline_outlined),
-              selectedIcon: const Icon(Icons.view_headline),
-              label: 'Places'.hardcoded,
+              icon: const Icon(Icons.map_outlined),
+              selectedIcon: const Icon(Icons.map),
+              label: 'Map'.hardcoded,
             ),
             NavigationDestination(
               icon: const Icon(Icons.person_outline),
@@ -106,14 +106,14 @@ class ScaffoldWithNavigationRail extends StatelessWidget {
               labelType: NavigationRailLabelType.all,
               destinations: <NavigationRailDestination>[
                 NavigationRailDestination(
-                  icon: const Icon(Icons.question_answer),
+                  icon: const Icon(Icons.question_answer_outlined),
                   selectedIcon: const Icon(Icons.question_answer),
-                  label: Text('Prompts'.hardcoded),
+                  label: Text('Chat'.hardcoded),
                 ),
                 NavigationRailDestination(
-                  icon: const Icon(Icons.view_headline_outlined),
-                  selectedIcon: const Icon(Icons.view_headline),
-                  label: Text('Places'.hardcoded),
+                  icon: const Icon(Icons.map_outlined),
+                  selectedIcon: const Icon(Icons.map),
+                  label: Text('Map'.hardcoded),
                 ),
                 NavigationRailDestination(
                   icon: const Icon(Icons.person_outline),
