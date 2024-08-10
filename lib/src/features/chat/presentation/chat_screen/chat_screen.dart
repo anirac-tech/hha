@@ -1,11 +1,11 @@
 import 'dart:async';
 
-import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:starter_architecture_flutter_firebase/src/common_widgets/html_view.dart';
 import 'package:starter_architecture_flutter_firebase/src/common_widgets/responsive_center.dart';
 import 'package:starter_architecture_flutter_firebase/src/constants/app_sizes.dart';
 import 'package:starter_architecture_flutter_firebase/src/constants/breakpoints.dart';
@@ -158,11 +158,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     itemBuilder: (context, index) => Card(
                       child: Padding(
                         padding: const EdgeInsets.all(Sizes.p8),
-                        child: Html(
-                          data: entries[index].data().response,
-                          style: {
-                            '*': Style(fontSize: FontSize.xLarge),
-                          },
+                        child: HtmlView(
+                          entries[index].data().response,
+                          style: Style(fontSize: FontSize.xLarge),
                         ),
                       ),
                     ),
