@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:starter_architecture_flutter_firebase/src/features/authentication/data/firebase_auth_repository.dart';
 import 'package:starter_architecture_flutter_firebase/src/features/chat/data/jobs_repository.dart';
@@ -21,10 +20,10 @@ class ChatScreenController extends _$ChatScreenController {
     // set loading state
     state = const AsyncLoading().copyWithPrevious(state);
     final textLower = text.toLowerCase();
-    if (oldJob?.text.toLowerCase() == textLower) {
-      state = AsyncError(Exception('Try asking a different question.'), StackTrace.current);
-      return null;
-    }
+    // if (oldJob?.text.toLowerCase() == textLower) {
+    //   state = AsyncError(Exception('Try asking a different question.'), StackTrace.current);
+    //   return null;
+    // }
 
     // check if name is already in use
     final repository = ref.read(jobsRepositoryProvider);
@@ -32,8 +31,8 @@ class ChatScreenController extends _$ChatScreenController {
     final allLowerCaseNames = prompts.map((prompt) => prompt.text.toLowerCase()).toList();
 
     if (allLowerCaseNames.contains(textLower)) {
-      state = AsyncError(Exception('This question has been asked before. Check the History tab.'),
-          StackTrace.current);
+      state = AsyncError(
+          'This question has been asked before. Check the History tab.', StackTrace.current);
       return null;
     } else {
       // job previously existed

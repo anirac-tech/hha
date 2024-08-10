@@ -9,12 +9,9 @@ import 'package:go_router/go_router.dart';
 import 'package:starter_architecture_flutter_firebase/src/common_widgets/responsive_center.dart';
 import 'package:starter_architecture_flutter_firebase/src/constants/app_sizes.dart';
 import 'package:starter_architecture_flutter_firebase/src/constants/breakpoints.dart';
-import 'package:starter_architecture_flutter_firebase/src/features/chat/data/jobs_repository.dart';
 import 'package:starter_architecture_flutter_firebase/src/features/chat/domain/prompt.dart';
 import 'package:starter_architecture_flutter_firebase/src/features/chat/presentation/chat_screen/chat_screen_controller.dart';
-import 'package:starter_architecture_flutter_firebase/src/features/chat/presentation/job_entries_screen/entry_list_item.dart';
 import 'package:starter_architecture_flutter_firebase/src/features/entries/data/entries_repository.dart';
-import 'package:starter_architecture_flutter_firebase/src/features/entries/domain/entry.dart';
 import 'package:starter_architecture_flutter_firebase/src/routing/app_router.dart';
 import 'package:starter_architecture_flutter_firebase/src/utils/async_value_ui.dart';
 
@@ -27,6 +24,7 @@ class ChatScreen extends ConsumerStatefulWidget {
 class _ChatScreenState extends ConsumerState<ChatScreen> {
   final _formKey = GlobalKey<FormState>();
   static const double chatBarHeight = 128;
+  TextEditingController promptController = TextEditingController();
 
   Prompt? _prompt;
   String? _text;
@@ -35,14 +33,16 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   void initState() {
     super.initState();
     if (_prompt != null) {
-      _text = _prompt!.text;
+      promptController.text = _prompt!.text;
     }
   }
 
   bool _validateAndSaveForm() {
     final form = _formKey.currentState!;
     if (form.validate()) {
+      setState(() => _text = promptController.text);
       form.save();
+      promptController.clear();
       return true;
     }
     return false;
@@ -55,7 +55,11 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             oldJob: _prompt,
             text: _text ?? '',
           );
-      if (id != null) setState(() => _prompt = Prompt(id: id, text: _text!));
+      if (id != null) {
+        setState(() {
+          _prompt = Prompt(id: id, text: _text!);
+        });
+      }
     }
   }
 
@@ -93,13 +97,13 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             Expanded(
               child: Container(
                 alignment: Alignment.center,
-                padding: const EdgeInsets.all(Sizes.p4),
+                padding: const EdgeInsets.all(Sizes.p8),
                 child: (_prompt != null)
                     ? _buildResponseView()
                     : Text(
                         'What can we help with today?',
                         textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        style: Theme.of(context).textTheme.displaySmall?.copyWith(
                               fontSize: Sizes.p48,
                             ),
                       ),
@@ -120,35 +124,54 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 
   Widget _buildResponseView() {
     final jobEntriesQuery = ref.watch(jobEntriesQueryProvider(_prompt!.id));
+    final theme = Theme.of(context);
     return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        Card(
-          child: Padding(
-            padding: const EdgeInsets.all(Sizes.p16),
-            child: Text(
-              '"${_prompt!.text}"',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontStyle: FontStyle.italic,
+        Align(
+          alignment: Alignment.bottomRight,
+          child: Card(
+            color: theme.colorScheme.primary,
+            surfaceTintColor: Colors.transparent,
+            child: Padding(
+              padding: const EdgeInsets.all(Sizes.p16),
+              child: Text(
+                '"${_prompt!.text}"',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontStyle: FontStyle.italic,
+                      color: theme.colorScheme.onPrimary,
+                      fontSize: 16,
+                    ),
+              ),
+            ),
+          ),
+        ),
+        StreamBuilder(
+            stream: jobEntriesQuery.snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                final entries = snapshot.data!.docs;
+                if (entries.isEmpty) return const SizedBox.shrink();
+                return Expanded(
+                  child: ListView.builder(
+                    itemCount: entries.length,
+                    itemBuilder: (context, index) => Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(Sizes.p8),
+                        child: Html(
+                          data: entries[index].data().response,
+                          style: {
+                            '*': Style(fontSize: FontSize.xLarge),
+                          },
+                        ),
+                      ),
+                    ),
                   ),
-            ),
-          ),
-        ),
-        Expanded(
-          child: FirestoreListView<Response>(
-            query: jobEntriesQuery,
-            emptyBuilder: (context) => const Center(child: Text('No response yet')),
-            errorBuilder: (context, error, stackTrace) => Center(
-              child: Text(error.toString()),
-            ),
-            loadingBuilder: (context) => const CircularProgressIndicator.adaptive(),
-            itemBuilder: (context, doc) {
-              final entry = doc.data();
-              return Html(
-                data: entry.response,
-              );
-            },
-          ),
-        ),
+                );
+              } else {
+                return const SizedBox.shrink();
+              }
+            }),
       ],
     );
   }
@@ -168,13 +191,12 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 minLines: 1,
                 maxLines: 3,
                 maxLengthEnforcement: MaxLengthEnforcement.none,
-                initialValue: _text,
+                controller: promptController,
                 validator: (value) {
                   if ((value ?? '').isEmpty) return 'Prompt can\'t be empty';
-                  if (value == _prompt?.text) return 'Try asking a new question';
+                  //if (value == _prompt?.text) return 'Try asking a new question';
                   return null;
                 },
-                onSaved: (value) => _text = value,
               ),
             ),
             FloatingActionButton(
