@@ -14,37 +14,19 @@ class PromptResponsesScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) => ScaffoldAsyncValueWidget<Prompt>(
         value: ref.watch(jobStreamProvider(promptId)),
-        data: (job) => JobEntriesPageContents(job: job),
+        data: (job) => JobEntriesPageContents(prompt: job),
       );
 }
 
 class JobEntriesPageContents extends StatelessWidget {
-  const JobEntriesPageContents({super.key, required this.job});
-  final Prompt job;
+  const JobEntriesPageContents({super.key, required this.prompt});
+  final Prompt prompt;
 
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
-          title: Text(job.text),
-          actions: <Widget>[
-            IconButton(
-              icon: const Icon(Icons.edit, color: Colors.white),
-              onPressed: () => context.goNamed(
-                AppRoute.editJob.name,
-                pathParameters: {'id': job.id},
-                extra: job,
-              ),
-            ),
-          ],
+          title: Text(prompt.text),
         ),
-        body: JobEntriesList(job: job),
-        floatingActionButton: FloatingActionButton(
-          child: const Icon(Icons.add, color: Colors.white),
-          onPressed: () => context.goNamed(
-            AppRoute.addEntry.name,
-            pathParameters: {'id': job.id},
-            extra: job,
-          ),
-        ),
+        body: JobEntriesList(job: prompt),
       );
 }

@@ -132,7 +132,7 @@ GoRouter goRouter(GoRouterRef ref) {
                   GoRoute(
                     path: 'jobs',
                     name: AppRoute.jobs.name,
-                    pageBuilder: (context, state) => const NoTransitionPage(
+                    pageBuilder: (context, state) => const MaterialPage(
                       child: JobsScreen(),
                     ),
                     routes: [

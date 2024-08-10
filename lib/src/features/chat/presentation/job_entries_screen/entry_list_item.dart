@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:starter_architecture_flutter_firebase/src/constants/app_sizes.dart';
 import 'package:starter_architecture_flutter_firebase/src/features/entries/domain/entry.dart';
 import 'package:starter_architecture_flutter_firebase/src/features/chat/domain/prompt.dart';
@@ -30,7 +31,7 @@ class EntryListItem extends StatelessWidget {
             Expanded(
               child: _buildContents(context),
             ),
-            const Icon(Icons.chevron_right, color: Colors.grey),
+            if (onTap != null) const Icon(Icons.chevron_right, color: Colors.grey),
           ],
         ),
       ),
@@ -53,11 +54,8 @@ class EntryListItem extends StatelessWidget {
           Text(startTime, style: const TextStyle(fontSize: 18.0)),
         ]),
         if (entry.response.isNotEmpty)
-          Text(
-            entry.response,
-            style: const TextStyle(fontSize: 12.0),
-            overflow: TextOverflow.ellipsis,
-            maxLines: 1,
+          Html(
+            data: entry.response,
           ),
       ],
     );
