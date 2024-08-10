@@ -4,13 +4,14 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:starter_architecture_flutter_firebase/src/features/authentication/data/firebase_auth_repository.dart';
 import 'package:starter_architecture_flutter_firebase/src/features/authentication/presentation/custom_profile_screen.dart';
 import 'package:starter_architecture_flutter_firebase/src/features/authentication/presentation/custom_sign_in_screen.dart';
+import 'package:starter_architecture_flutter_firebase/src/features/chat/presentation/chat_screen/chat_screen.dart';
 import 'package:starter_architecture_flutter_firebase/src/features/entries/domain/entry.dart';
 import 'package:starter_architecture_flutter_firebase/src/features/entries/presentation/entries_screen.dart';
 import 'package:starter_architecture_flutter_firebase/src/features/entries/presentation/entry_screen/entry_screen.dart';
-import 'package:starter_architecture_flutter_firebase/src/features/jobs/domain/job.dart';
-import 'package:starter_architecture_flutter_firebase/src/features/jobs/presentation/edit_job_screen/edit_job_screen.dart';
-import 'package:starter_architecture_flutter_firebase/src/features/jobs/presentation/job_entries_screen/job_entries_screen.dart';
-import 'package:starter_architecture_flutter_firebase/src/features/jobs/presentation/jobs_screen/jobs_screen.dart';
+import 'package:starter_architecture_flutter_firebase/src/features/chat/domain/prompt.dart';
+import 'package:starter_architecture_flutter_firebase/src/features/chat/presentation/edit_job_screen/edit_job_screen.dart';
+import 'package:starter_architecture_flutter_firebase/src/features/chat/presentation/job_entries_screen/job_entries_screen.dart';
+import 'package:starter_architecture_flutter_firebase/src/features/chat/presentation/jobs_screen/jobs_screen.dart';
 import 'package:starter_architecture_flutter_firebase/src/features/onboarding/data/onboarding_repository.dart';
 import 'package:starter_architecture_flutter_firebase/src/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:starter_architecture_flutter_firebase/src/routing/app_startup.dart';
@@ -39,6 +40,7 @@ enum AppRoute {
   entries,
   miscNotes,
   profile,
+  chat,
 }
 
 @riverpod
@@ -71,12 +73,12 @@ GoRouter goRouter(GoRouterRef ref) {
         if (path.startsWith('/startup') ||
             path.startsWith('/onboarding') ||
             path.startsWith('/signIn')) {
-          return '/jobs';
+          return '/chat';
         }
       } else {
         if (path.startsWith('/startup') ||
             path.startsWith('/onboarding') ||
-            path.startsWith('/jobs') ||
+            path.startsWith('/chat') ||
             path.startsWith('/entries') ||
             path.startsWith('/account')) {
           return '/signIn';
@@ -121,74 +123,83 @@ GoRouter goRouter(GoRouterRef ref) {
             navigatorKey: _jobsNavigatorKey,
             routes: [
               GoRoute(
-                path: '/jobs',
-                name: AppRoute.jobs.name,
+                path: '/chat',
+                name: AppRoute.chat.name,
                 pageBuilder: (context, state) => const NoTransitionPage(
-                  child: JobsScreen(),
+                  child: ChatScreen(),
                 ),
                 routes: [
                   GoRoute(
-                    path: 'add',
-                    name: AppRoute.addJob.name,
-                    parentNavigatorKey: _rootNavigatorKey,
-                    pageBuilder: (context, state) {
-                      return const MaterialPage(
-                        fullscreenDialog: true,
-                        child: EditJobScreen(),
-                      );
-                    },
-                  ),
-                  GoRoute(
-                    path: ':id',
-                    name: AppRoute.job.name,
-                    pageBuilder: (context, state) {
-                      final id = state.pathParameters['id']!;
-                      return MaterialPage(
-                        child: PromptResponsesScreen(promptId: id),
-                      );
-                    },
+                    path: 'jobs',
+                    name: AppRoute.jobs.name,
+                    pageBuilder: (context, state) => const MaterialPage(
+                      child: JobsScreen(),
+                    ),
                     routes: [
                       GoRoute(
-                        path: 'entries/add',
-                        name: AppRoute.addEntry.name,
+                        path: 'add',
+                        name: AppRoute.addJob.name,
                         parentNavigatorKey: _rootNavigatorKey,
                         pageBuilder: (context, state) {
-                          final promptID = state.pathParameters['id']!;
-                          return MaterialPage(
+                          return const MaterialPage(
                             fullscreenDialog: true,
-                            child: EntryScreen(
-                              promptID: promptID,
-                            ),
+                            child: EditJobScreen(),
                           );
                         },
                       ),
                       GoRoute(
-                        path: 'entries/:eid',
-                        name: AppRoute.entry.name,
+                        path: ':id',
+                        name: AppRoute.job.name,
                         pageBuilder: (context, state) {
-                          final promptID = state.pathParameters['id']!;
-                          final entryId = state.pathParameters['eid']!;
-                          final entry = state.extra as Response?;
+                          final id = state.pathParameters['id']!;
                           return MaterialPage(
-                            child: EntryScreen(
-                              promptID: promptID,
-                              responseID: entryId,
-                              response: entry,
-                            ),
+                            child: PromptResponsesScreen(promptId: id),
                           );
                         },
-                      ),
-                      GoRoute(
-                        path: 'edit',
-                        name: AppRoute.editJob.name,
-                        pageBuilder: (context, state) {
-                          final jobId = state.pathParameters['id'];
-                          final job = state.extra as Prompt?;
-                          return MaterialPage(
-                            fullscreenDialog: true,
-                            child: EditJobScreen(promptId: jobId, prompt: job),
-                          );
-                        },
+                        routes: [
+                          GoRoute(
+                            path: 'entries/add',
+                            name: AppRoute.addEntry.name,
+                            parentNavigatorKey: _rootNavigatorKey,
+                            pageBuilder: (context, state) {
+                              final promptID = state.pathParameters['id']!;
+                              return MaterialPage(
+                                fullscreenDialog: true,
+                                child: EntryScreen(
+                                  promptID: promptID,
+                                ),
+                              );
+                            },
+                          ),
+                          GoRoute(
+                            path: 'entries/:eid',
+                            name: AppRoute.entry.name,
+                            pageBuilder: (context, state) {
+                              final promptID = state.pathParameters['id']!;
+                              final entryId = state.pathParameters['eid']!;
+                              final entry = state.extra as Response?;
+                              return MaterialPage(
+                                child: EntryScreen(
+                                  promptID: promptID,
+                                  responseID: entryId,
+                                  response: entry,
+                                ),
+                              );
+                            },
+                          ),
+                          GoRoute(
+                            path: 'edit',
+                            name: AppRoute.editJob.name,
+                            pageBuilder: (context, state) {
+                              final jobId = state.pathParameters['id'];
+                              final job = state.extra as Prompt?;
+                              return MaterialPage(
+                                fullscreenDialog: true,
+                                child: EditJobScreen(promptId: jobId, prompt: job),
+                              );
+                            },
+                          ),
+                        ],
                       ),
                     ],
                   ),

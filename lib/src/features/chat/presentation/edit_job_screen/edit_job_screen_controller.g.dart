@@ -1,27 +1,27 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'jobs_screen_controller.dart';
+part of 'edit_job_screen_controller.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$jobsScreenControllerHash() =>
-    r'e3a40258404cf512fd12924d8f0a485f75d7d6fb';
+String _$editJobScreenControllerHash() =>
+    r'48532ea4fbdcc99c2c08fc53ef89149224b19afd';
 
-/// See also [JobsScreenController].
-@ProviderFor(JobsScreenController)
-final jobsScreenControllerProvider =
-    AutoDisposeAsyncNotifierProvider<JobsScreenController, void>.internal(
-  JobsScreenController.new,
-  name: r'jobsScreenControllerProvider',
+/// See also [EditJobScreenController].
+@ProviderFor(EditJobScreenController)
+final editJobScreenControllerProvider =
+    AutoDisposeAsyncNotifierProvider<EditJobScreenController, void>.internal(
+  EditJobScreenController.new,
+  name: r'editJobScreenControllerProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$jobsScreenControllerHash,
+      : _$editJobScreenControllerHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$JobsScreenController = AutoDisposeAsyncNotifier<void>;
+typedef _$EditJobScreenController = AutoDisposeAsyncNotifier<void>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

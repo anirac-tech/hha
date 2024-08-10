@@ -13,27 +13,29 @@ String _$jobsRepositoryHash() => r'99834710b25b2229bf6bd85bb1e522bfb2b61d5b';
 final jobsRepositoryProvider = Provider<JobsRepository>.internal(
   jobsRepository,
   name: r'jobsRepositoryProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$jobsRepositoryHash,
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$jobsRepositoryHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
 typedef JobsRepositoryRef = ProviderRef<JobsRepository>;
-String _$jobsQueryHash() => r'46482866aecb8be7e41fd6bdb0e2d5a6a87fc350';
+String _$jobsQueryHash() => r'416b7247b0110a5fc0e97795e413f6cc8919e341';
 
 /// See also [jobsQuery].
 @ProviderFor(jobsQuery)
 final jobsQueryProvider = AutoDisposeProvider<Query<Prompt>>.internal(
   jobsQuery,
   name: r'jobsQueryProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product') ? null : _$jobsQueryHash,
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$jobsQueryHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
 typedef JobsQueryRef = AutoDisposeProviderRef<Query<Prompt>>;
-String _$jobStreamHash() => r'72fc86cf080cd4a6bdb2da9f13ff81efb312521e';
+String _$jobStreamHash() => r'12488a25c92e5ea2de21b3c26cd0290de3894c0b';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -91,7 +93,8 @@ class JobStreamFamily extends Family<AsyncValue<Prompt>> {
   static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
 
   @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies => _allTransitiveDependencies;
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
 
   @override
   String? get name => r'jobStreamProvider';
@@ -110,7 +113,9 @@ class JobStreamProvider extends AutoDisposeStreamProvider<Prompt> {
           from: jobStreamProvider,
           name: r'jobStreamProvider',
           debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product') ? null : _$jobStreamHash,
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$jobStreamHash,
           dependencies: JobStreamFamily._dependencies,
           allTransitiveDependencies: JobStreamFamily._allTransitiveDependencies,
           jobId: jobId,
@@ -170,7 +175,8 @@ mixin JobStreamRef on AutoDisposeStreamProviderRef<Prompt> {
   String get jobId;
 }
 
-class _JobStreamProviderElement extends AutoDisposeStreamProviderElement<Prompt> with JobStreamRef {
+class _JobStreamProviderElement extends AutoDisposeStreamProviderElement<Prompt>
+    with JobStreamRef {
   _JobStreamProviderElement(super.provider);
 
   @override
